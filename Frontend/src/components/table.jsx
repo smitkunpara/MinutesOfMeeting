@@ -52,6 +52,7 @@ const FetchData = () => {
             const response = await axios.get('http://127.0.0.1:8000/transcript');
             resolve();
             setData(response.data);
+            localStorage.setItem('JSON_DATA', JSON.stringify(response.data));
             // setData(processTranscript(response.data));
             setLoading(false);
           } catch (error) {
@@ -114,23 +115,22 @@ const FetchSummary = () => {
 
 
 
-const Table = ({ currentTime }) => {
+const Table = ({ currentTime,NormalHighlight,FollowHighligh }) => {
+  console.log(currentTime);
+  console.log(NormalHighlight);
+  console.log(FollowHighligh);
   const { loading: LoadingTranscript, data } = FetchData();
   const {loding: SummaryLoading, summaryData} = FetchSummary();
   const [search, setSearch] = useState('');
-
-
   const filteredData = useMemo(() => {
     const searchLower = search.toLowerCase();
     return data.filter(item =>
       item.words.some(word => word.text.toLowerCase().includes(searchLower))
     );
   }, [data, search]);
-
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
-
   return (
     <>
         <main className="table" id="customers_table">
@@ -169,7 +169,7 @@ const Table = ({ currentTime }) => {
                   <td>
                     {item.words.map((word, wordIndex) => (
                       <span key={`${index+1}-${wordIndex}`} id={`time-${word.start}`} 
-                            style={{ backgroundColor: currentTime * 1000 >= word.start && currentTime * 1000 <= word.end ? 'yellow' : 'transparent' }}>
+                            style={{ backgroundColor: currentTime * 1000 >= word.start && currentTime * 1000 <= word.end  ? 'yellow' : 'transparent' }}>
                         {word.text + ' '}
                       </span>
                     ))}

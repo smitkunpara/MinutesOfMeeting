@@ -4,7 +4,9 @@ import "./transcript.css";
 import Navbar from './navbar';
 import { useState } from 'react';
 
-function Transcript({ ResponseData }) {
+function Transcript({ ResponseID }) {
+  const [NormalHighlight, setNormalHighlight] = useState(false);
+  const [FollowHighligh, setHighlightAndFollow] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const handleTimeUpdate = (time) => {
     setCurrentTime(time);
@@ -12,8 +14,8 @@ function Transcript({ ResponseData }) {
   return (
     <>
         <Navbar />
-        <AudioPlayer onTimeUpdate={handleTimeUpdate} />
-        <Table currentTime={currentTime} />
+        <AudioPlayer onTimeUpdate={handleTimeUpdate} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh}  />
+        <Table currentTime={currentTime} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh} />
     </>
   );
 }

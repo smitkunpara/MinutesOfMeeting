@@ -1,25 +1,52 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import './navbar.css'; // Import CSS file for styling
 import Logo from '../assets/logo.png'; // Import logo image
-
-const ExportasPDF = () => {
-    // Function to export as PDF
+import UploadBox from './uploadbox';
+import Switch from 'react-input-switch';
+const downloadFile = function (data, fileType, fileName = '') {
+    const a = document.createElement('a');
+    a.download = fileName;
+    const mime_types = {
+        'json': 'application/json',
+        'csv': 'text/csv',
+        'excel': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    }
+    a.href = `
+        data:${mime_types[fileType]};charset=utf-8,${encodeURIComponent(data)}
+    `;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
 }
+
 const ExportasJSON = () => {
-    // Function to export as JSON
+    let json_data = JSON.parse(localStorage.getItem('JSON_DATA'));
+    json_data = json_data.map(item => ({
+        speaker: item.speaker,
+        text: item.text,
+        start: item.start,
+        end: item.end
+    }));
+    downloadFile(JSON.stringify(json_data), 'json', 'transcript.json');
 }
 const ExportasExcel = () => {
-    // Function to export as Excel
-}
-const NormalHighlight = () => {
-    // Function to highlight normal
-}
-const FollowHighligh = () => {
-    // Function to highlight critical
+    let json_data = JSON.parse(localStorage.getItem('JSON_DATA'));
+    json_data = json_data.map(item => ({
+        speaker: item.speaker,
+        text: item.text,
+        start: item.start,
+        end: item.end
+    }));
+    downloadFile(JSON.stringify(json_data), 'excel', 'transcript.xlsx');
 }
 
 
-const Navbar = () => {
+const Navbar = ({NormalHighlight,FollowHighligh}) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [value, setValue] = useState(0);
+    const handleDialogOpen = () => {
+        setIsOpen(true);
+    };
     return (
         <>
             <nav className="navbar">
@@ -28,24 +55,28 @@ const Navbar = () => {
                 </div>
                 <div className="navbar-options">
                     <div className="navbar-option navbar-dropdown">
-                        Export File
+                        Text Highlight
                         <div className="navbar-dropdown-content">
-                            <div onClick={NormalHighlight} className="dropdown-item">Normal Highlight</div>
+                            <div onClick={NormalHighlight} className="dropdown-item">
+                                Normal Highlight
+                                <Switch on={true} off={false} value={value} onChange={setValue} />
+                            </div>
                             <div onClick={FollowHighligh} className="dropdown-item">Follow & Highlight</div>
                         </div>
                     </div>
                     <div className="navbar-option navbar-dropdown">
                         Export File
                         <div className="navbar-dropdown-content">
-                            <div onClick={ExportasPDF} className="dropdown-item">Export as PDF</div>
-                            <div onClick={ExportasJSON} className="dropdown-item">Export as JSON</div>
+                            {/* <div onClick={ExportasPDF} className="dropdown-item">Export as PDF</div> */}
+                            <div onClick={ExportasJSON} className="dropdown-item">Export as JSON </div>
                             <div onClick={ExportasExcel} className="dropdown-item">Export as Excel</div>
                         </div>
                     </div>
                     <div className="navbar-option navbar-dropdown">
                         Upload
                         <div className="navbar-dropdown-content">
-                            <div onClick={ExportasPDF} className="dropdown-item">Upload new Audio File</div>
+                            <div onClick={handleDialogOpen} className="dropdown-item">Upload new Audio File</div>
+                            <UploadBox isOpen={isOpen} onClose={() => setIsOpen(false)} />
                         </div>
                     </div>
                 </div>
