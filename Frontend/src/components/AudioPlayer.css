@@ -1,0 +1,11 @@
+wave{
+    height: 50px !important;
+}
+
+.player-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add this line */
+}
