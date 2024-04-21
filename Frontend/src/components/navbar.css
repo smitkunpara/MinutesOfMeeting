@@ -31,7 +31,7 @@
 }
 
 .navbar-option:hover {
-    background-color: #f9e3f7;
+    background-color: #cee1fd;
     border-radius: 5px 5px 0 0; 
     padding: 5px; 
 }
@@ -43,7 +43,7 @@
     position: absolute;
     top: 100%;
     left: 0%;
-    background-color: #f9e3f7;
+    background-color: #cee1fd;
     border-radius: 0 5px 5px 5px;
     padding: 5px;
     display: none;
@@ -58,9 +58,16 @@
 .dropdown-item {
     padding: 5px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dropdown-item .switch {
+    margin-left: 10px;
 }
 
 .dropdown-item:hover {
-    background-color: #eec0ec;
+    background-color: #a0c6ff;
     border-radius: 5px;
 }

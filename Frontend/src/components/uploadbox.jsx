@@ -16,7 +16,6 @@ import {
 import { toast } from 'react-toastify';
 import "./UploadBox.css";
 import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 
 const Dialog = ({ onClose, ...rest }) => {
     const navigate = useNavigate();
@@ -64,17 +63,20 @@ const Dialog = ({ onClose, ...rest }) => {
                     try {
                         const formData = new FormData();
                         formData.append('audio', file);
-                        const response = { "ID": "1234" };
+                        const generateID = () => {
+                            return Math.random().toString(36).substr(2, 10);
+                        };
+
+                        const response = { "ID": generateID() };
                         // const response = await axios.get('http://127.0.0.1:8000/transcript');
                         // const responseID = await axios.post('http://127.0.0.1:8000/upload', formData, {
                         //     headers: {
                         //         'Content-Type': 'multipart/form-data',
                         //     },
                         // });
-                        // navigate(`/transcript/${responseID}`, { state: { file: URL.createObjectURL(file) } });
-                        navigate(`/transcript/`, { state: { file: URL.createObjectURL(file) } });
+                        navigate(`/transcript/${response.ID}`, { state: { file: URL.createObjectURL(file) } });
                         resolve();
-                        // send audio and get responseID to transcript page
+                        HandleCloseButtonClose();
                     } catch (error) {
                         console.log(error);
                         reject();

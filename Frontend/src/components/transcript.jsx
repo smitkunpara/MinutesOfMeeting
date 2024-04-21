@@ -3,19 +3,21 @@ import Table from './table';
 import "./transcript.css";
 import Navbar from './navbar';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-function Transcript({ ResponseID }) {
+function Transcript() {
+  const { ResponseID } = useParams();
   const [NormalHighlight, setNormalHighlight] = useState(false);
-  const [FollowHighligh, setHighlightAndFollow] = useState(false);
+  const [FollowHighligh, setFollowHighligh] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const handleTimeUpdate = (time) => {
     setCurrentTime(time);
   };
   return (
     <>
-        <Navbar />
-        <AudioPlayer onTimeUpdate={handleTimeUpdate} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh}  />
-        <Table currentTime={currentTime} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh} />
+        <Navbar setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh}/>
+        <AudioPlayer onTimeUpdate={handleTimeUpdate} />
+        <Table ResponseID={ResponseID} currentTime={currentTime} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh} />
     </>
   );
 }

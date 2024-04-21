@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import './home.css';
 import 'react-toastify/dist/ReactToastify.css';
 import UploadBox from './uploadbox';
-import "./modal.scss";
+
 const Home = () => {
 
     const [isOpen, setIsOpen] = useState(false);

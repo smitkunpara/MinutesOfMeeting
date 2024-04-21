@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
 import './navbar.css'; // Import CSS file for styling
-import Logo from '../assets/logo.png'; // Import logo image
+import Logo from '../assets/logo2.png'; // Import logo image
 import UploadBox from './uploadbox';
 import Switch from 'react-input-switch';
+import { set } from 'react-hook-form';
 const downloadFile = function (data, fileType, fileName = '') {
     const a = document.createElement('a');
     a.download = fileName;
@@ -40,13 +41,26 @@ const ExportasExcel = () => {
     downloadFile(JSON.stringify(json_data), 'excel', 'transcript.xlsx');
 }
 
-
-const Navbar = ({NormalHighlight,FollowHighligh}) => {
+const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [value, setValue] = useState(0);
+    const [Normal, setNormal] = useState(false);
+    const [Follow, setFollow] = useState(false);
     const handleDialogOpen = () => {
         setIsOpen(true);
     };
+    const handleNormalHighlight = () => {
+        setNormalHighlight(prevState => !prevState);
+        setNormal(prevState => !prevState);
+        setFollow(false);
+        setFollowHighligh(false);
+    };
+    const handleFollowHighlight = () => {
+        setFollowHighligh(prevState => !prevState);
+        setFollow(prevState => !prevState);
+        setNormal(false);
+        setNormalHighlight(false);
+    };
+    
     return (
         <>
             <nav className="navbar">
@@ -57,11 +71,14 @@ const Navbar = ({NormalHighlight,FollowHighligh}) => {
                     <div className="navbar-option navbar-dropdown">
                         Text Highlight
                         <div className="navbar-dropdown-content">
-                            <div onClick={NormalHighlight} className="dropdown-item">
+                            <div onClick={handleNormalHighlight} className="dropdown-item">
                                 Normal Highlight
-                                <Switch on={true} off={false} value={value} onChange={setValue} />
+                                <Switch on={true} off={false} value={Normal}/>
                             </div>
-                            <div onClick={FollowHighligh} className="dropdown-item">Follow & Highlight</div>
+                            <div onClick={handleFollowHighlight} className="dropdown-item">
+                                Highlight & Follow
+                                <Switch on={true} off={false} value={Follow}/>
+                            </div>
                         </div>
                     </div>
                     <div className="navbar-option navbar-dropdown">

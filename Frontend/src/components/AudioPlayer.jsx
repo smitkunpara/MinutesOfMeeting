@@ -82,7 +82,7 @@ const handleTimeUpdate = (event) => {
 };
 
   return (
-    <StyledAudioControl controls preload="auto" onTimeUpdate={handleTimeUpdate}>
+    <StyledAudioControl key={src} controls preload="auto" onTimeUpdate={handleTimeUpdate}>
       <source src={src} />
       Your browser does not support the audio element.
     </StyledAudioControl>

@@ -2,6 +2,7 @@
     /* set the background colour of font to yellow; */
     background-color: yellow;
 }
+
 * {
     margin: 0;
     padding: 0;
@@ -9,19 +10,23 @@
     box-sizing: border-box;
     font-family: sans-serif;
 }
+
 @media print {
- .table, .table__body {
-  overflow: visible;
-  height: auto !important;
-  width: auto !important;
- }
+
+    .table,
+    .table__body {
+        overflow: visible;
+        height: auto !important;
+        width: auto !important;
+    }
 }
 
 
 body {
     min-height: 100vh;
+    background-color: #d9e8ff;
     /* background: url() center / cover; */
-    background: url("https://imgproxy.gamma.app/resize/quality:80/resizing_type:fit/width:2400/https://cdn.gamma.app/theme_images/prism-background.2232a16e.png?w=3707&q=70") center / cover;
+    /* background: url("https://imgproxy.gamma.app/resize/quality:80/resizing_type:fit/width:2400/https://cdn.gamma.app/theme_images/prism-background.2232a16e.png?w=3707&q=70") center / cover; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,13 +46,16 @@ main.table {
 .table__header {
     width: 100%;
     height: 10%;
-    background-color: rgba(255, 255, 255, 0.5); /* Change this line */
-    backdrop-filter: blur(10px); /* Add this line */
+    background-color: rgba(255, 255, 255, 0.5);
+    /* Change this line */
+    backdrop-filter: blur(10px);
+    /* Add this line */
     padding: .8rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Add this line */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    /* Add this line */
 }
 
 .table__header .input-group {
@@ -65,7 +73,8 @@ main.table {
 
 .table__header .input-group:hover {
     width: 45%;
-    background-color: rgba(208, 198, 198, 0.533);
+    background-color: #d9e8ff;
+    /* background-color: rgba(208, 198, 198, 0.533); */
     box-shadow: 0 .1rem .4rem #0002;
 }
 
@@ -75,6 +84,7 @@ main.table {
     height: 2.4rem;
     /* position: absolute; */
 }
+
 .table__header .input-group input {
     width: 90%;
     padding: 0 .5rem 0 .3rem;
@@ -85,7 +95,9 @@ main.table {
 
 .table__body {
     width: 98%;
-    max-height: calc(89% - 1.6rem);
+    height: 50%;
+    /* max-height: calc(89% - 1.6rem); */
+    /* background-color: transparent; */
     background-color: #fffb;
     margin: .8rem auto;
     border-radius: .6rem;
@@ -94,18 +106,18 @@ main.table {
 }
 
 
-.table__body::-webkit-scrollbar{
+.table__body::-webkit-scrollbar {
     width: 0.5rem;
     height: 0.5rem;
 }
 
-.table__body::-webkit-scrollbar-thumb{
+.table__body::-webkit-scrollbar-thumb {
     border-radius: .5rem;
     background-color: #0004;
     visibility: hidden;
 }
 
-.table__body:hover::-webkit-scrollbar-thumb{ 
+.table__body:hover::-webkit-scrollbar-thumb {
     visibility: visible;
 }
 
@@ -123,17 +135,23 @@ td img {
     vertical-align: middle;
 }
 
-table, th, td {
+table,
+th,
+td {
     border-collapse: collapse;
     padding: 1rem;
     text-align: left;
+}
+
+table td {
+    cursor: pointer;
 }
 
 thead th {
     position: sticky;
     top: 0;
     left: 0;
-    background-color: #d5d1defe;
+    background-color: #cee1fd;
     cursor: pointer;
     text-transform: capitalize;
 }
@@ -146,8 +164,10 @@ tbody tr {
     --delay: .1s;
     transition: .5s ease-in-out var(--delay), background-color 0s;
     /* backdrop-filter: blur(5px); */
-    background-color: rgba(255, 255, 255, 0.3); /* Change this line */
+    background-color: rgba(255, 255, 255, 0.3);
+    /* Change this line */
 }
+
 tbody tr.hide {
     opacity: 0;
     transform: translateX(100%);
@@ -188,15 +208,15 @@ thead th span.icon-arrow {
     height: 1.3rem;
     border-radius: 50%;
     border: 1.4px solid transparent;
-    
+
     text-align: center;
     font-size: 1rem;
-    
+
     margin-left: .5rem;
     transition: .2s ease-in-out;
 }
 
-thead th:hover span.icon-arrow{
+thead th:hover span.icon-arrow {
     border: 1.4px solid #6c00bd;
 }
 
@@ -204,15 +224,16 @@ thead th:hover {
     color: #6c00bd;
 }
 
-thead th.active span.icon-arrow{
+thead th.active span.icon-arrow {
     background-color: #6c00bd;
     color: #fff;
 }
 
-thead th.asc span.icon-arrow{
+thead th.asc span.icon-arrow {
     transform: rotate(180deg);
 }
 
-thead th.active,tbody td.active {
+thead th.active,
+tbody td.active {
     color: #6c00bd;
 }
