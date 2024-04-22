@@ -22,36 +22,38 @@ def read_root():
 
 @app.post("/uploadfile")
 async def create_upload_file(file: UploadFile = UploadFile(...)):
+    print("\n\n\n\n")
+    print(file.filename)
     video_id = (file.filename).replace(" ", "_")
     with open(f"files/videos/{video_id}", "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     video_id = video_id.split(".")[0]
     return {"video_id": video_id}
 
-# @app.get("/transcript/{video_id}")
-# def read_item(video_id: str):
-@app.get("/transcript")
-def read_item():
+@app.get("/transcript/{video_id}")
+def read_item(video_id: str):
+# @app.get("/transcript")
+# def read_item():
     aai.settings.api_key = "b5a07145193344c1945082ff6bcca3b5"
     config = aai.TranscriptionConfig(
         speaker_labels=True,
     )
     transcriber = aai.Transcriber()
-    # transcript = transcriber.transcribe(f"files/videos/{video_id}.mp4", config)
-    transcript = transcriber.transcribe(f"check.mp4", config)
+    transcript = transcriber.transcribe(f"files/videos/{video_id}.mp4", config)
+    # transcript = transcriber.transcribe(f"check.mp4", config)
     # save the transcript to a file
     if transcript.status == aai.TranscriptStatus.error:
         return {"error": transcript.error}
     else:
-        # with open(f"files/transcript/{video_id}.txt", "w") as file:
-        #     for utterance in transcript.utterances:
-        #         file.write(f"{utterance.speaker}: {utterance.text}\n")
+        with open(f"files/transcript/{video_id}.txt", "w") as file:
+            for utterance in transcript.utterances:
+                file.write(f"{utterance.speaker}: {utterance.text}\n")
         return transcript.utterances
 
-# @app.get("/summery/{video_id}")
-# def read_item(video_id: str):
-@app.get("/summary")
-def read_item():
+@app.get("/summary/{video_id}")
+def read_item(video_id: str):
+# @app.get("/summary")
+# def read_item():
     import google.generativeai as genai
     import requests
 
@@ -90,14 +92,14 @@ def read_item():
                                 safety_settings=safety_settings)
     
     text = "Give the summary/minutes of meeting in plan text\n\n"
-    with open(f"transcript.txt", "r") as file:
-        text = file.read()
-    # with open(f"files/transcript/{video_id}.txt", "r") as file:
+    # with open(f"transcript.txt", "r") as file:
     #     text = file.read()
+    with open(f"files/transcript/{video_id}.txt", "r") as file:
+        text = file.read()
 
     response = model.generate_content(text)
-    # with open(f"files/summary/{video_id}.txt", "w") as file:
-    #     file.write(response.text)
+    with open(f"files/summary/{video_id}.txt", "w") as file:
+        file.write(response.text)
     # print(response.text)
     return response.text
 

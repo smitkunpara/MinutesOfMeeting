@@ -13,9 +13,11 @@ import {
     SelectedFile,
     AudioIcon,
 } from "./styled";
+import AudioFile from "../assets/AudioFile.svg";
 import { toast } from 'react-toastify';
 import "./UploadBox.css";
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Dialog = ({ onClose, ...rest }) => {
     const navigate = useNavigate();
@@ -62,19 +64,16 @@ const Dialog = ({ onClose, ...rest }) => {
                 (async () => {
                     try {
                         const formData = new FormData();
-                        formData.append('audio', file);
-                        const generateID = () => {
-                            return Math.random().toString(36).substr(2, 10);
-                        };
-
-                        const response = { "ID": generateID() };
-                        // const response = await axios.get('http://127.0.0.1:8000/transcript');
-                        // const responseID = await axios.post('http://127.0.0.1:8000/upload', formData, {
-                        //     headers: {
-                        //         'Content-Type': 'multipart/form-data',
-                        //     },
-                        // });
-                        navigate(`/transcript/${response.ID}`, { state: { file: URL.createObjectURL(file) } });
+                        formData.append('file', file);
+                        // const generateID = () => {
+                        //     return Math.random().toString(36).substr(2, 10);
+                        // };
+                        const response = await axios.post('http://127.0.0.1:8000/uploadfile', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        });
+                        navigate(`/transcript/${response.data.video_id}`, { state: { file: URL.createObjectURL(file) } });
                         resolve();
                         HandleCloseButtonClose();
                     } catch (error) {
@@ -113,12 +112,15 @@ const Dialog = ({ onClose, ...rest }) => {
                             }
                         </DropArea>
                         {file && (
-                            <SelectedFile>
-                                <AudioIcon className="fas fa-file-audio" />
-                                <FileName>{file.name}</FileName>
-                            </SelectedFile>
+                            <>
+                                <SelectedFile>
+                                    {/* <AudioIcon className="fas fa-file-audio" /> */}
+                                    <img src={AudioFile} className='audiofileicon' alt="" />
+                                    <FileName>{file.name}</FileName>
+                                </SelectedFile>
+                                <DialogButton className='GreenButton' type="submit">Upload</DialogButton>
+                            </>
                         )}
-                        {file && <DialogButton className='GreenButton' type="submit">Upload</DialogButton>}
                     </form>
                 </DialogBody>
                 <DialogFooter>

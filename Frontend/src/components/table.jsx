@@ -95,7 +95,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh }) => 
             setLoadingTranscript(true);
             setSummaryLoading(true);
             console.log("fetching transcript");
-            const response = await axios.get('http://127.0.0.1:8000/transcript');
+            const response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`);
             console.log("got it");
             resolve(response.data);
             localStorage.setItem('JSON_DATA', JSON.stringify(response.data));
@@ -122,7 +122,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh }) => 
         new Promise((resolve, reject) => {
           (async () => {
             try {
-              const response = await axios.get('http://127.0.0.1:8000/summary');
+              const response = await axios.get(`http://127.0.0.1:8000/summary/${ResponseID}`);
               resolve(response.data);
               setSummaryData(response.data);
               setSummaryLoading(false);
