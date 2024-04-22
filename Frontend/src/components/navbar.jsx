@@ -1,9 +1,8 @@
-import React, { useState, useRef } from 'react';
-import './navbar.css'; // Import CSS file for styling
-import Logo from '../assets/logo2.png'; // Import logo image
+import React, { useState } from 'react';
+import './navbar.css';
+import Logo from '../assets/logo2.png';
 import UploadBox from './uploadbox';
-import Switch from 'react-input-switch';
-import { set } from 'react-hook-form';
+// import Switch from 'react-input-switch';
 const downloadFile = function (data, fileType, fileName = '') {
     const a = document.createElement('a');
     a.download = fileName;
@@ -73,11 +72,11 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                         <div className="navbar-dropdown-content">
                             <div onClick={handleNormalHighlight} className="dropdown-item">
                                 Normal Highlight
-                                <Switch on={true} off={false} value={Normal}/>
+                                {/* <Switch on={true} off={false} value={Normal}/> */}
                             </div>
                             <div onClick={handleFollowHighlight} className="dropdown-item">
                                 Highlight & Follow
-                                <Switch on={true} off={false} value={Follow}/>
+                                {/* <Switch on={true} off={false} value={Follow}/> */}
                             </div>
                         </div>
                     </div>

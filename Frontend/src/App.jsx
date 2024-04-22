@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify';
 const App = () => {
   const router = createBrowserRouter([
     {path: '/', element: <Home />},
-    {path: "/transcript", element: <Transcript />},
+   {path: "/transcript/:ResponseID", element: <Transcript />},
   ]);
   return (
     <>

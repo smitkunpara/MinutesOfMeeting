@@ -1,4 +1,4 @@
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import { Skeleton } from '@mui/material';
 import { useEffect, useState, useMemo } from "react";
 import { toast } from "react-toastify";
