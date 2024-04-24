@@ -1,6 +1,6 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 import { Skeleton } from '@mui/material';
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import "./table.css";
@@ -81,12 +81,13 @@ const FetchSummary = () => {
 };
 
 
-const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh }) => {
+const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: FollowHighlight, setAudioTime }) => {
   const [search, setSearch] = useState('');
   const [SummaryLoading, setSummaryLoading] = useState(true);
   const [summaryData, setSummaryData] = useState('');
   const [LoadingTranscript, setLoadingTranscript] = useState(true);
   const [Transcript, setTranscript] = useState([]);
+  const previousWordRef = useRef(null);
   useEffect(() => {
     toast.promise(
       new Promise((resolve, reject) => {
@@ -158,10 +159,35 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh }) => 
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
+
   useEffect(() => {
-    
-  }, [currentTime, NormalHighlight, FollowHighligh])
-  
+    const adjustedTime = currentTime * 1000;
+
+    if (NormalHighlight || FollowHighlight) {
+      ``
+      for (let item of Transcript) {
+        if (adjustedTime >= item.start && adjustedTime <= item.end) {
+          for (let word of item.words) {
+            if (adjustedTime >= word.start && adjustedTime <= word.end) {
+              const element = document.getElementById(word.start);
+              if (element) {
+                if (FollowHighlight) {
+                  element.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+                }
+                if (previousWordRef.current) {
+                  previousWordRef.current.classList.remove('highlight');
+                }
+                element.classList.add('highlight');
+                previousWordRef.current = element;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }, [currentTime, NormalHighlight, FollowHighlight]);
+
 
   return (
     <>
@@ -200,8 +226,8 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh }) => 
                     <td>{`Speaker ${item.speaker}`}</td>
                     <td>
                       {item.words.map((word, wordIndex) => (
-                        <span key={`${index + 1}-${wordIndex}`} id={`${word.start}-${word.end}`}
-                          style={{ backgroundColor: currentTime * 1000 >= word.start && currentTime * 1000 <= word.end && (NormalHighlight || FollowHighligh) ? 'yellow' : 'transparent' }}>
+                        <span onClick={() => setAudioTime(word.start)} key={`${index + 1}-${wordIndex}`} id={word.start}>
+                          {/* style={{ backgroundColor: currentTime * 1000 >= word.start && currentTime * 1000 <= word.end && (NormalHighlight || FollowHighligh) ? 'yellow' : 'transparent' }}> */}
                           {word.text + ' '}
                         </span>
                       ))}

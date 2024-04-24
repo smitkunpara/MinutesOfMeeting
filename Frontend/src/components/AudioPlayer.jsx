@@ -58,6 +58,7 @@
 
 import React from 'react';
 import { styled } from '@mui/material/styles';
+import { useRef,useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const StyledAudioControl = styled('audio')(() => ({
@@ -74,15 +75,22 @@ const StyledAudioControl = styled('audio')(() => ({
   // boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
 }));
 
-const AudioPlayer = ({onTimeUpdate }) => {
+const AudioPlayer = ({ onTimeUpdate, AudioTime }) => {
   const location = useLocation();
   const src = location.state?.file;
-const handleTimeUpdate = (event) => {
-  onTimeUpdate(event.target.currentTime);
-};
+  const audioRef = useRef(null);
+  const handleTimeUpdate = (event) => {
+    onTimeUpdate(event.target.currentTime);
+  };
+  useEffect(() => {
+    console.log('AudioTime:', AudioTime);
+    if (audioRef.current) {
+      audioRef.current.currentTime = AudioTime/1000;
+    }
+  }, [AudioTime]);
 
   return (
-    <StyledAudioControl key={src} controls preload="auto" onTimeUpdate={handleTimeUpdate}>
+    <StyledAudioControl ref={audioRef} key={src} controls preload="auto" onTimeUpdate={handleTimeUpdate}>
       <source src={src} />
       Your browser does not support the audio element.
     </StyledAudioControl>

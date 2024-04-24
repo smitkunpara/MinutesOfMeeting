@@ -10,14 +10,15 @@ function Transcript() {
   const [NormalHighlight, setNormalHighlight] = useState(false);
   const [FollowHighligh, setFollowHighligh] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [AudioTime , setAudioTime ] = useState(0);
   const handleTimeUpdate = (time) => {
     setCurrentTime(time);
   };
   return (
     <>
         <Navbar setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh}/>
-        <AudioPlayer onTimeUpdate={handleTimeUpdate} />
-        <Table ResponseID={ResponseID} currentTime={currentTime} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh} />
+        <AudioPlayer onTimeUpdate={handleTimeUpdate} AudioTime={AudioTime} />
+        <Table setAudioTime={setAudioTime} ResponseID={ResponseID} currentTime={currentTime} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh} />
     </>
   );
 }
