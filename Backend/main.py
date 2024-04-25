@@ -91,7 +91,7 @@ def read_item(video_id: str):
                                 generation_config=generation_config,
                                 safety_settings=safety_settings)
     
-    text = "Give the summary/minutes of meeting in plan text\n\n"
+    text = "Give the summary/minutes of meeting\n\n"
     # with open(f"transcript.txt", "r") as file:
     #     text = file.read()
     with open(f"files/transcript/{video_id}.txt", "r") as file:

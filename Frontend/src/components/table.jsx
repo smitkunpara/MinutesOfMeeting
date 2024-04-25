@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import "./table.css";
+import Markdown from 'react-markdown';
 
 const FetchData = () => {
   const [loading, setLoading] = useState(false);
@@ -250,7 +251,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
                 <Skeleton variant="text" />
               </>
             ) : (
-              <p>{summaryData}</p>
+              <Markdown>{summaryData}</Markdown>
             )}
 
           </div>
