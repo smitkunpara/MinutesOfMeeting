@@ -21,16 +21,17 @@
     }
 }
 
-
+/* 
 body {
     min-height: 100vh;
     background-color: #d9e8ff;
-    /* background: url() center / cover; */
-    /* background: url("https://imgproxy.gamma.app/resize/quality:80/resizing_type:fit/width:2400/https://cdn.gamma.app/theme_images/prism-background.2232a16e.png?w=3707&q=70") center / cover; */
+    background: url() center / cover;
+    background: url("https://imgproxy.gamma.app/resize/quality:80/resizing_type:fit/width:2400/https://cdn.gamma.app/theme_images/prism-background.2232a16e.png?w=3707&q=70") center / cover;
     display: flex;
     justify-content: center;
     align-items: center;
-}
+} */
+
 
 main.table {
     width: 97vw;
