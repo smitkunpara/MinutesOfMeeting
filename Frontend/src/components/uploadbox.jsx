@@ -20,6 +20,20 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Dialog = ({ onClose, ...rest }) => {
+    const languages = [
+        { value: "en", label: "English" },
+        { value: "es", label: "Spanish" },
+        { value: "fr", label: "French" },
+        { value: "hi", label: "Hindi" }];
+        
+
+    const [selectedOption, setSelectedOption] = useState("");
+
+    // Function to handle option change
+    const handleOptionChange = (e) => {
+        setSelectedOption(e.target.value);
+    };
+
     const navigate = useNavigate();
     const elRef = useRef();
     const handleModalVibration = () => {
@@ -118,7 +132,20 @@ const Dialog = ({ onClose, ...rest }) => {
                                     <img src={AudioFile} className='audiofileicon' alt="" />
                                     <FileName>{file.name}</FileName>
                                 </SelectedFile>
-                                <DialogButton className='GreenButton' type="submit">Upload</DialogButton>
+                                <select
+                                    value={selectedOption}
+                                    onChange={handleOptionChange}
+                                    className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    {languages.map((language) => (
+                                        <option key={language.value} value={language.value}>
+                                            {language.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className='flex justify-center'>
+                                <DialogButton className='GreenButton ' type="submit">Upload</DialogButton>
+                                </div>
                             </>
                         )}
                     </form>

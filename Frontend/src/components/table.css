@@ -34,7 +34,7 @@ body {
 
 
 main.table {
-    width: 97vw;
+    width: 100%;
     /* height: 95vh;  */
     background-color: #fff5;
     backdrop-filter: blur(7px);

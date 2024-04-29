@@ -194,7 +194,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
     <>
       <main className="table" id="customers_table">
         <section className="table__header">
-          <h1>Minutes of Meeting</h1>
+          <h1 className='text-lg font-bold'>Minutes of Meeting</h1>
           <div className="input-group">
             {/* <input type="search" placeholder="Search Data..." /> */}
             <input type="search" value={search} onChange={handleSearch} placeholder="Search Data..." />
@@ -240,7 +240,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
           </table>
         </section>
         <section className="table__header">
-          <h1>Summary</h1>
+          <h1 className='text-lg font-bold'>Summary</h1>
         </section>
         <section className="table__body">
           <div>

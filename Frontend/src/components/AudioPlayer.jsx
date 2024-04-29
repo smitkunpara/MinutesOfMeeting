@@ -64,7 +64,7 @@ import { useLocation } from 'react-router-dom';
 const StyledAudioControl = styled('audio')(() => ({
   // position: 'fixed',
   // left: "0",
-  width: '97vw',
+  width: '100%',
   // top: '',
   marginTop: "11vh",
   // backgroundColor: '#fff',

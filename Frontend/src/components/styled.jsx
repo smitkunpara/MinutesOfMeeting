@@ -120,6 +120,9 @@ export const DialogTitle = styled.div`
 `;
 export const DialogBody = styled.div`
   padding: 0.1rem 1.5rem 0rem 1.5rem; // Reduced top and bottom padding
+  display: flex;
+  justify-content: center; 
+
 `;
 export const DialogFooter = styled.div`
   display: flex;
@@ -127,9 +130,10 @@ export const DialogFooter = styled.div`
   padding: 0 1.25rem .75rem 1.25rem; // Removed top padding
 `;
 export const DialogButton = styled.button`
-  margin-left: 1rem;
-  padding: .75rem;
+  margin-top: 10px;
+  padding: .70rem;
   border: none;
+  width: 30%;
   border-radius: 5px;
   cursor: pointer;
   background-color: #007BFF; // Changed color to Bootstrap primary button color
