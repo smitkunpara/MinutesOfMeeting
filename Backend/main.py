@@ -3,8 +3,33 @@ import shutil
 from typing import Union
 import assemblyai as aai
 from fastapi import FastAPI, UploadFile
-from video_processing import final
 from fastapi.middleware.cors import CORSMiddleware
+import random
+import string
+import mysql.connector
+import json
+
+cnx = mysql.connector.connect(
+    host="localhost",  # or use "127.0.0.1"
+    port=3306,
+    user="root",
+    password="Sujal@121",
+    database="mom"
+)
+
+# Create a cursor object
+cursor = cnx.cursor()
+
+
+def generate_random_id():
+    characters = string.ascii_letters + string.digits
+    random_id = ''.join(random.choice(characters) for _ in range(8))
+    return random_id
+
+    
+
+   
+
 
 
 app = FastAPI()
@@ -24,16 +49,21 @@ def read_root():
 async def create_upload_file(file: UploadFile = UploadFile(...)):
     print("\n\n\n\n")
     print(file.filename)
-    video_id = (file.filename).replace(" ", "_")
-    with open(f"files/videos/{video_id}", "wb") as buffer:
+    video_id = generate_random_id() 
+    with open(f"files/videos/{video_id}.mp4", "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-    video_id = video_id.split(".")[0]
     return {"video_id": video_id}
 
 @app.get("/transcript/{video_id}")
 def read_item(video_id: str):
 # @app.get("/transcript")
 # def read_item():
+    cursor.execute("SELECT * FROM Transcript WHERE id = %s", (video_id,))
+    result = cursor.fetchone()
+    if result:
+        return json.loads(result[1])
+    
+    
     aai.settings.api_key = "b5a07145193344c1945082ff6bcca3b5"
     config = aai.TranscriptionConfig(
         speaker_labels=True,
@@ -45,15 +75,32 @@ def read_item(video_id: str):
     if transcript.status == aai.TranscriptStatus.error:
         return {"error": transcript.error}
     else:
-        with open(f"files/transcript/{video_id}.txt", "w") as file:
-            for utterance in transcript.utterances:
-                file.write(f"{utterance.speaker}: {utterance.text}\n")
-        return transcript.utterances
+        # with open(f"files/transcript/{video_id}.txt", "w") as file:
+        #     for utterance in transcript.utterances:
+        #         file.write(f"{utterance.speaker}: {utterance.text}\n")
+
+        # convert trancript.utterence to json dump
+        dump_transcript=[]
+        for utterance in transcript.utterances:
+            words = []
+            for word in utterance.words:
+                words.append({"start": word.start, "end": word.end, "confidence": word.confidence, "text": word.text, "speaker": word.speaker})
+            dump_transcript.append({"speaker": utterance.speaker, "text": utterance.text, "start": utterance.start, "end": utterance.end, "confidence": utterance.confidence, "words": words})
+        dumpVal = json.dumps(dump_transcript)
+        cursor.execute("INSERT INTO Transcript (id, transcript) VALUES (%s, %s)", (video_id, dumpVal))
+        cnx.commit()
+        return dump_transcript
 
 @app.get("/summary/{video_id}")
 def read_item(video_id: str):
 # @app.get("/summary")
 # def read_item():
+    cursor.execute("SELECT * FROM Summary WHERE id = %s", (video_id,))
+    result = cursor.fetchone()
+    if result:
+        return json.loads(result[1])
+    
+
     import google.generativeai as genai
     import requests
 
@@ -92,35 +139,26 @@ def read_item(video_id: str):
                                 safety_settings=safety_settings)
     
     text = "Give the summary/minutes of meeting\n\n"
-    # with open(f"transcript.txt", "r") as file:
+    # with open(f"files/transcript/{video_id}.txt", "r") as file:
     #     text = file.read()
-    with open(f"files/transcript/{video_id}.txt", "r") as file:
-        text = file.read()
+    cursor.execute("SELECT * FROM Transcript WHERE id = %s", (video_id,))
+    result = cursor.fetchone()
+    if result:
+        transcript = json.loads(result[1])
+        for utterance in transcript:
+            text += utterance["text"] + "\n\n"
+
+    
+
 
     response = model.generate_content(text)
-    with open(f"files/summary/{video_id}.txt", "w") as file:
-        file.write(response.text)
-    # print(response.text)
+    # with open(f"files/summary/{video_id}.txt", "w") as file:
+    #     file.write(response.text)
+    dump_summary = json.dumps(response.text)
+    cursor.execute("INSERT INTO Summary (id, summary) VALUES (%s, %s)", (video_id, dump_summary))
+    cnx.commit()
+
     return response.text
 
 
-    
-@app.post("/LTS")
-async def read_item(file: UploadFile = UploadFile(...)):
-    temp_file_path = "temp_video.mp4"  # Temporary file path
-    output_folder = "output"  # Output folder path
-
-    try:
-        with open(temp_file_path, "wb") as temp_file:
-            shutil.copyfileobj(file.file, temp_file)
-
-        # final(temp_file_path)
-
-        output_files = [f for f in os.listdir(output_folder) if os.path.isfile(os.path.join(output_folder, f))]
-        return {"output_files": output_files}
-
-    except Exception as e:
-        os.remove(temp_file_path)
-        os.remove(os.path.join(output_folder, "output_audio.wav"))
-        os.remove(os.path.join(output_folder, "transcript.txt"))
-        return {"error": f"An error occurred: {e}"}
+ 

@@ -1,7 +1,7 @@
 
 const Footer = () => {
     return (
-        <footer className="fixed bottom-0 w-full text-gray-600 body-font border-t border-gray-300">
+        <footer className="bottom-0 w-full text-gray-600 body-font border-t border-gray-300">
             <div className="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col" bis_skin_checked="1">
                 <a className="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-10 h-10 text-white p-2 bg-blue-500 rounded-full" viewBox="0 0 24 24">
