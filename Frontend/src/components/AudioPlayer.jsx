@@ -75,17 +75,18 @@ const StyledAudioControl = styled('audio')(() => ({
   // boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
 }));
 
-const AudioPlayer = ({ onTimeUpdate, AudioTime }) => {
+const AudioPlayer = ({ onTimeUpdate, AudioTime, ResponseID }) => {
+
   const location = useLocation();
-  const src = location.state?.file;
+  const src = `http://127.0.0.1:8000/audio/${ResponseID}`
   const audioRef = useRef(null);
   const handleTimeUpdate = (event) => {
     onTimeUpdate(event.target.currentTime);
   };
   useEffect(() => {
-    console.log('AudioTime:', AudioTime);
     if (audioRef.current) {
       audioRef.current.currentTime = AudioTime/1000;
+      console.log('AudioTime:', AudioTime/1000);
     }
   }, [AudioTime]);
 

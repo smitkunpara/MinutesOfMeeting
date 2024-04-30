@@ -4,6 +4,7 @@ from typing import Union
 import assemblyai as aai
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 import random
 import string
 import mysql.connector
@@ -33,6 +34,7 @@ def generate_random_id():
 
 
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -44,6 +46,13 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+@app.get("/audio/{video_id}")
+def read_item(video_id: str):
+    file= f"/Users/sujalvijay/Projects/MinutesOfMeeting/Backend/files/videos/{video_id}.mp4"
+    return FileResponse(file)
+    
+
 
 @app.post("/uploadfile")
 async def create_upload_file(file: UploadFile = UploadFile(...)):

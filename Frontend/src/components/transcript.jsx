@@ -17,7 +17,7 @@ function Transcript() {
   return (
     <>
         <Navbar setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh}/>
-        <AudioPlayer onTimeUpdate={handleTimeUpdate} AudioTime={AudioTime} />
+        <AudioPlayer onTimeUpdate={handleTimeUpdate} AudioTime={AudioTime} ResponseID={ResponseID}/>
         <Table setAudioTime={setAudioTime} ResponseID={ResponseID} currentTime={currentTime} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh} />
     </>
   );
