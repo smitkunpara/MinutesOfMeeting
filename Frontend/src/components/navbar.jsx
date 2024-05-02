@@ -53,12 +53,14 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
         setNormal(prevState => !prevState);
         setFollow(false);
         setFollowHighligh(false);
+        console.log(Normal);
     };
     const handleFollowHighlight = () => {
         setFollowHighligh(prevState => !prevState);
         setFollow(prevState => !prevState);
         setNormal(false);
         setNormalHighlight(false);
+        console.log(Follow);
     };
 
     return (
@@ -73,7 +75,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                         Text Highlight
                         <div className="navbar-dropdown-content">
                             <div className="top-full -mt-4 pt-4 lg:-ml-12 lg:mr-6" bis_skin_checked="1" >
-                                <ul className="w-full" id="headlessui-menu-items-:Rjioom:" role="menu" tabindex="0" data-headlessui-state="">
+                                <ul className="w-full" id="headlessui-menu-items-:Rjioom:" role="menu" tabIndex="0" data-headlessui-state="">
                                     <div className="rounded-2xl bg-white shadow-2xl lg:max-w-screen-xl" bis_skin_checked="1">
                                         <div className="p-2" bis_skin_checked="1"><div className="grid max-w-3xl  gap-2 rounded-xl bg-neutral-50 p-4" bis_skin_checked="1">
                                             <a onClick={handleNormalHighlight} className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 bg-neutral-50 hover:bg-white md:gap-4 md:p-6">
@@ -82,7 +84,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                                                         <img alt="Property 1=Blog.svg" src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=96,quality=75,format=auto/Property_1_Blog_9221a1ffab/Property_1_Blog_9221a1ffab.svg" width="48" height="48" decoding="async" data-nimg="1" loading="lazy" />
                                                     </div>
                                                     <h2 className="font-medium leading-tight tracking-tight">Normal Highlight</h2>
-                                                    <Switch on={true} off={false} value={Normal} />
+                                                    <Switch checked={Normal} />
                                                 </div>
                                             </a>
                                             <a onClick={handleFollowHighlight} className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 bg-neutral-50 hover:bg-white md:gap-4 md:p-6" >
@@ -91,7 +93,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                                                         <img alt="Property 1=Blog.svg" src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=96,quality=75,format=auto/Articles_8171b5cd3a/Articles_8171b5cd3a.svg" width="48" height="48" decoding="async" data-nimg="1" loading="lazy" />
                                                     </div>
                                                     <h2 className="font-medium leading-tight tracking-tight">Highlight & Follow</h2>
-                                                    <Switch on={true} off={false} value={Follow} />
+                                                    <Switch checked={Follow} />
                                                 </div>
                                             </a>
                                         </div>
@@ -113,7 +115,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                         Export File
                         <div className="navbar-dropdown-content">
                             <div className="top-full -mt-4 pt-4 lg:-ml-12 lg:mr-6" bis_skin_checked="1" >
-                                <ul className="w-full" id="headlessui-menu-items-:Rjioom:" role="menu" tabindex="0" data-headlessui-state="">
+                                <ul className="w-full" id="headlessui-menu-items-:Rjioom:" role="menu" tabIndex="0" data-headlessui-state="">
                                     <div className="rounded-2xl bg-white shadow-2xl lg:max-w-screen-xl" bis_skin_checked="1">
                                         <div className="p-2" bis_skin_checked="1"><div className="grid max-w-3xl  gap-2 rounded-xl bg-black-10 p-4" bis_skin_checked="1">
                                             <a onClick={ExportasJSON} className="transition group grid-row-col grid gap-2 rounded-lg p-3 hover:bg-black hover:text-white md:gap-4 md:p-6" >
@@ -146,7 +148,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                         Upload
                         <div className="navbar-dropdown-content">
                             <div className="top-full -mt-4 pt-4 lg:-ml-12 lg:mr-6" bis_skin_checked="1" >
-                                <ul className="w-full" id="headlessui-menu-items-:Rjioom:" role="menu" tabindex="0" data-headlessui-state="">
+                                <ul className="w-full" id="headlessui-menu-items-:Rjioom:" role="menu" tabIndex="0" data-headlessui-state="">
                                     <div className="rounded-2xl bg-white shadow-2xl lg:max-w-screen-xl" bis_skin_checked="1">
                                         <div className="p-2" bis_skin_checked="1">
                                             <div className="grid max-w-3xl  gap-2 rounded-xl bg-black-10 p-4" bis_skin_checked="1">

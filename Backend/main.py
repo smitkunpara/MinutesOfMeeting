@@ -2,19 +2,20 @@ import os
 import shutil
 from typing import Union
 import assemblyai as aai
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile,Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
 import random
 import string
 import mysql.connector
 import json
+from pydub import AudioSegment
 
 cnx = mysql.connector.connect(
     host="localhost",  # or use "127.0.0.1"
     port=3306,
     user="root",
-    password="Sujal@121",
+    password="root",
     database="mom"
 )
 
@@ -48,9 +49,22 @@ def read_root():
     return {"Hello": "World"}
 
 @app.get("/audio/{video_id}")
-def read_item(video_id: str):
-    file= f"/Users/sujalvijay/Projects/MinutesOfMeeting/Backend/files/videos/{video_id}.mp4"
-    return FileResponse(file)
+async def read_item(request: Request, video_id: str):
+    file_path = f"files/videos/{video_id}.wav"
+    file_size = os.path.getsize(file_path)
+    start, end = 0, file_size - 1
+    if "range" in request.headers:
+        byte_pos = request.headers["range"].replace("bytes=", "").split("-")
+        start = int(byte_pos[0])
+        end = int(byte_pos[1]) if len(byte_pos) > 1 and byte_pos[1] else file_size - 1
+    def content():
+        with open(file_path, 'rb') as f:
+            f.seek(start)
+            yield f.read(end - start + 1)
+    response = StreamingResponse(content(), media_type="audio/wav")
+    response.headers["Content-Range"] = f"bytes {start}-{end}/{file_size}"
+    response.status_code = 206
+    return response
     
 
 
@@ -59,8 +73,11 @@ async def create_upload_file(file: UploadFile = UploadFile(...)):
     print("\n\n\n\n")
     print(file.filename)
     video_id = generate_random_id() 
-    with open(f"files/videos/{video_id}.mp4", "wb") as buffer:
+    with open(f"files/videos/{video_id}", "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+    audio = AudioSegment.from_file(f"files/videos/{video_id}")
+    audio.export(f"files/videos/{video_id}.wav", format="wav")
+    os.remove(f"files/videos/{video_id}")
     return {"video_id": video_id}
 
 @app.get("/transcript/{video_id}")
@@ -78,7 +95,7 @@ def read_item(video_id: str):
         speaker_labels=True,
     )
     transcriber = aai.Transcriber()
-    transcript = transcriber.transcribe(f"files/videos/{video_id}.mp4", config)
+    transcript = transcriber.transcribe(f"files/videos/{video_id}.wav", config)
     # transcript = transcriber.transcribe(f"check.mp4", config)
     # save the transcript to a file
     if transcript.status == aai.TranscriptStatus.error:
