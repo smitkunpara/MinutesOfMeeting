@@ -15,7 +15,7 @@ cnx = mysql.connector.connect(
     host="localhost",  # or use "127.0.0.1"
     port=3306,
     user="root",
-    password="root",
+    password="Sujal@121",
     database="mom"
 )
 

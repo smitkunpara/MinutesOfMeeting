@@ -95,7 +95,7 @@ export const DialogClose = styled.div`
   box-sizing: content-box;
   width: 2rem;
   height: 2rem;
-  padding: 0 0 1rem 0rem;
+  padding: .4rem ;
   color: #000;
   border: 0;
   border-radius: 0.25rem;

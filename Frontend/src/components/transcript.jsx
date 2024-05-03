@@ -1,6 +1,6 @@
 import AudioPlayer from './AudioPlayer';
-import Table from './table';
 import "./transcript.css";
+import Table from './table';
 import Navbar from './navbar';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -10,16 +10,24 @@ function Transcript() {
   const [NormalHighlight, setNormalHighlight] = useState(false);
   const [FollowHighligh, setFollowHighligh] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [AudioTime , setAudioTime ] = useState(0);
+  const [AudioTime, setAudioTime] = useState(0);
   const handleTimeUpdate = (time) => {
     setCurrentTime(time);
   };
   return (
     <>
-        <Navbar setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh}/>
-        <AudioPlayer onTimeUpdate={handleTimeUpdate} AudioTime={AudioTime} ResponseID={ResponseID}/>
-        <Table setAudioTime={setAudioTime} ResponseID={ResponseID} currentTime={currentTime} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh} />
+        <Navbar setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh} />
+        <div className='px-4 bg-[#f6f3f3]'>
+        <div className='p-4 bg-white rounded-2xl'>
+          {/* <div className='p-4'> */}
+          <AudioPlayer onTimeUpdate={handleTimeUpdate} AudioTime={AudioTime} ResponseID={ResponseID} />
+          <Table setAudioTime={setAudioTime} ResponseID={ResponseID} currentTime={currentTime} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh} />
+
+          {/* </div> */}
+        </div>
+      </div>
     </>
+
   );
 }
 

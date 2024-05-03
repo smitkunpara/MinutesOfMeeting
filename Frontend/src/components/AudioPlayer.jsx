@@ -66,12 +66,13 @@ const StyledAudioControl = styled('audio')(() => ({
   // left: "0",
   width: '100%',
   // top: '',
-  marginTop: "11vh",
+  // marginTop: "10vh",
+  
   // backgroundColor: '#fff',
   // background: `#eec0ec url('https://imgproxy.gamma.app/resize/quality:80/resizing_type:fit/width:2400/https://cdn.gamma.app/theme_images/prism-background.2232a16e.png?w=3707&q=70') no-repeat center bottom`, // Change this line
   borderRadius: '5px 5px 0 0',
   // borderRadius: '0 0 5px 5px',
-  // padding: '10px', // Change this line
+  // padding: '10px 20px', // Change this line
   // boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
 }));
 

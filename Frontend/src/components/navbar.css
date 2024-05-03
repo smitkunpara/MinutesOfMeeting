@@ -1,22 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
 .navbar {
     width: 100%;
     display: flex;
     padding: 10px 20px;
     color: #000;
-    background-color: #fff;
+    background-color: rgb(246 243 243);
     justify-content: flex-end;
     align-items: center;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    position: fixed;
+    position:sticky;
     left:0;
     top: 0;
     z-index: 9999;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); 
 }
-
-.navbar-logo img {
+.navbar-logo .logo {
     width: 60px;
+    margin: 0 20px;
+}
+.logo-text{
+    font-family: "Raleway", sans-serif;
 }
 
 .navbar-options {
@@ -25,16 +29,12 @@
 }
 
 .navbar-option {
-    margin-left: 20px;
-    cursor: pointer;
-    padding: 5px;
+    padding : 0px 20px;
+
+    
 }
 
-.navbar-option:hover .navbar-dropdown{
-    background-color: #cee1fd;
-    border-radius: 5px 5px 0 0; 
-    padding: 5px; 
-}
+
 .navbar-dropdown {
     position: relative;
 }
@@ -51,7 +51,7 @@
 
 }
 
-/* .navbar-dropdown-content {
+/* .navbar-dropdown-contentt {
     display: block;
 } */
 .navbar-dropdown:hover .navbar-dropdown-content {
