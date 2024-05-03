@@ -2,33 +2,28 @@ import React, { useState } from 'react';
 import './navbar.css';
 import Logo from '../assets/logo2.png';
 import UploadBox from './uploadbox';
+import { utils, writeFile } from 'xlsx';
 import Switch from '@mui/material/Switch';
 
-const downloadFile = function (data, fileType, fileName = '') {
-    const a = document.createElement('a');
-    a.download = fileName;
-    const mime_types = {
-        'json': 'application/json',
-        'csv': 'text/csv',
-        'excel': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    }
-    a.href = `
-        data:${mime_types[fileType]};charset=utf-8,${encodeURIComponent(data)}
-    `;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-}
-
 const ExportasJSON = () => {
-    let json_data = JSON.parse(localStorage.getItem('JSON_DATA'));
-    json_data = json_data.map(item => ({
-        speaker: item.speaker,
-        text: item.text,
-        start: item.start,
-        end: item.end
-    }));
-    downloadFile(JSON.stringify(json_data), 'json', 'transcript.json');
+    let jsonData = JSON.parse(localStorage.getItem('JSON_DATA'));
+    if (jsonData) {
+        jsonData = jsonData.map(item => ({
+            speaker: item.speaker,
+            text: item.text,
+            start: item.start,
+            end: item.end
+        }));
+        const blob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'data.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } else {
+        console.error('No data available for download.');
+    }
 }
 const ExportasExcel = () => {
     let json_data = JSON.parse(localStorage.getItem('JSON_DATA'));
@@ -38,7 +33,11 @@ const ExportasExcel = () => {
         start: item.start,
         end: item.end
     }));
-    downloadFile(JSON.stringify(json_data), 'excel', 'transcript.xlsx');
+
+    const worksheet = utils.json_to_sheet(json_data);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    writeFile(workbook, 'transcript.xlsx');
 }
 
 const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
@@ -126,7 +125,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                                                     <h2 className="font-medium leading-tight tracking-tight">Export as JSON </h2>
                                                 </div>
                                             </a>
-                                            <a onClick={ExportasExcel} className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 hover:bg-black hover:text-white md:gap-4 md:p-6" href="/blog">
+                                            <a onClick={ExportasExcel} className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 hover:bg-black hover:text-white md:gap-4 md:p-6" >
                                                 <div className="grid grid-flow-col content-start items-center justify-start justify-items-start gap-3" bis_skin_checked="1">
                                                     <div className="h-12 w-12" bis_skin_checked="1">
                                                         <img alt="Property 1=Blog.svg" src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=96,quality=75,format=auto/Property_1_Blog_9221a1ffab/Property_1_Blog_9221a1ffab.svg" width="48" height="48" decoding="async" data-nimg="1" loading="lazy" />
