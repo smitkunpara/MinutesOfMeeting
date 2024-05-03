@@ -12,6 +12,7 @@
 
 .body{
     background-color: #fff;
+    scroll-behavior: smooth;
 }
 
 .logo img {

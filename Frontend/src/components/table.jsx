@@ -163,14 +163,14 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
 
   useEffect(() => {
     const adjustedTime = currentTime * 1000;
-
+    let element;
     if (NormalHighlight || FollowHighlight) {
       ``
       for (let item of Transcript) {
         if (adjustedTime >= item.start && adjustedTime <= item.end) {
           for (let word of item.words) {
             if (adjustedTime >= word.start && adjustedTime <= word.end) {
-              const element = document.getElementById(word.start);
+              element = document.getElementById(word.start);
               if (element) {
                 if (FollowHighlight) {
                   element.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
@@ -186,6 +186,9 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
           }
         }
       }
+    }
+    else if (previousWordRef.current) {
+      previousWordRef.current.classList.remove('highlight');
     }
   }, [currentTime, NormalHighlight, FollowHighlight]);
 

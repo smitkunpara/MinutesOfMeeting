@@ -76,8 +76,8 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                 <div className="navbar-options">
                     <div className="navbar-option navbar-dropdown">
                         <a
-                            className="appearance-none transition group inline-grid grid-flow-col p-3 justify-center items-center rounded-full  font-medium hover:bg-white text-neutral-1000  xl:gap-2">
-                            Products
+                            className="cursor-pointer appearance-none transition group inline-grid grid-flow-col p-3 justify-center items-center rounded-full  font-medium hover:bg-white text-neutral-1000  xl:gap-2">
+                            Highlight
                             <svg stroke-width="0" viewBox="0 0 448 512"
                                 className="h-3 w-3 m-1 lg:m-0 text-neutral-500 transition group-hover:text-inherit" height="1em"
                                 width="1em" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +98,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                                                     className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 bg-[#f7f7f8] hover:bg-white md:gap-4 md:p-6">
                                                     <div className="grid grid-flow-col content-start items-center justify-start justify-items-start gap-3"
                                                         bis_skin_checked="1">
-                                                        <div className="h-12 w-12" bis_skin_checked="1">
+                                                        <div className="h-8 w-8" bis_skin_checked="1">
                                                             <img alt="Property 1=Blog.svg"
                                                                 src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=96,quality=75,format=auto/Property_1_Blog_9221a1ffab/Property_1_Blog_9221a1ffab.svg"
                                                                 width="48" height="48" decoding="async" data-nimg="1"
@@ -113,7 +113,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                                                     className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 bg-[#f7f7f8] hover:bg-white md:gap-4 md:p-6">
                                                     <div className="grid grid-flow-col content-start items-center justify-start justify-items-start gap-3"
                                                         bis_skin_checked="1">
-                                                        <div className="h-12 w-12" bis_skin_checked="1">
+                                                        <div className="h-8 w-8" bis_skin_checked="1">
                                                             <img alt="Property 1=Blog.svg"
                                                                 src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=96,quality=75,format=auto/Articles_8171b5cd3a/Articles_8171b5cd3a.svg"
                                                                 width="48" height="48" decoding="async" data-nimg="1"
@@ -133,7 +133,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                     </div>
                     <div className="navbar-option navbar-dropdown">
                         <a
-                            className="appearance-none transition group inline-grid grid-flow-col p-3 justify-center items-center rounded-full  font-medium hover:bg-white text-neutral-1000  xl:gap-2">
+                            className="cursor-pointer appearance-none transition group inline-grid grid-flow-col p-3 justify-center items-center rounded-full  font-medium hover:bg-white text-neutral-1000  xl:gap-2">
                             Export File
                             <svg stroke-width="0" viewBox="0 0 448 512"
                                 className="h-3 w-3 m-1 lg:m-0 text-neutral-500 transition group-hover:text-inherit" height="1em"
@@ -154,7 +154,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                                                     className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 bg-[#f7f7f8] hover:bg-white md:gap-4 md:p-6">
                                                     <div className="grid grid-flow-col content-start items-center justify-start justify-items-start gap-3"
                                                         bis_skin_checked="1">
-                                                        <div className="h-12 w-12" bis_skin_checked="1">
+                                                        <div className="h-8 w-8" bis_skin_checked="1">
                                                             <img alt="Property 1=Blog.svg"
                                                                 src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=96,quality=75,format=auto/Property_1_Blog_9221a1ffab/Property_1_Blog_9221a1ffab.svg"
                                                                 width="48" height="48" decoding="async" data-nimg="1"
@@ -165,17 +165,17 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                                                     </div>
                                                 </a>
                                                 <a onClick={ExportasExcel}
-                                                    className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 bg-[#f7f7f8] hover:bg-white md:gap-4 md:p-6">
+                                                    className="appearance-none transition w-auto group grid-row-col grid gap-2 rounded-lg p-3 bg-[#f7f7f8] hover:bg-white md:gap-4 md:p-6">
 
-                                                    <div className="grid grid-flow-col content-start items-center justify-start justify-items-start gap-3"
+                                                    <div className="grid grid-flow-col w-auto content-start items-center justify-start justify-items-start gap-3"
                                                         bis_skin_checked="1">
-                                                        <div className="h-12 w-12" bis_skin_checked="1">
+                                                        <div className="h-8 w-8" bis_skin_checked="1">
                                                             <img alt="Property 1=Blog.svg"
                                                                 src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=96,quality=75,format=auto/Property_1_Blog_9221a1ffab/Property_1_Blog_9221a1ffab.svg"
                                                                 width="48" height="48" decoding="async" data-nimg="1"
                                                                 loading="lazy" />
                                                         </div>
-                                                        <h2 className="font-medium leading-tight tracking-tight">Export as Excel
+                                                        <h2 className="font-medium leading-tight tracking-tight text-2">Export as Excel
                                                         </h2>
                                                     </div>
                                                 </a>

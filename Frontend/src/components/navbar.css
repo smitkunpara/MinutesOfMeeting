@@ -30,7 +30,7 @@
 
 .navbar-option {
     padding : 0px 20px;
-
+    
     
 }
 
@@ -43,7 +43,7 @@
     position: absolute;
     top: 100%;
     left: 0%;
-    width: 20rem;
+    width: 15rem;
     /* background-color: #cee1fd; */
     /* border-radius: 0 5px 5px 5px; */
     padding: 25px 0;
@@ -60,7 +60,6 @@
 
 .dropdown-item {
     padding: 5px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     width: 12rem;
