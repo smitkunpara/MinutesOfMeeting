@@ -1,13 +1,17 @@
 import os
 import shutil
-from fastapi import FastAPI, UploadFile,Request
+from fastapi import FastAPI, UploadFile,Request,Header,Depends,HTTPException,status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 import random
 import string
 from pydub import AudioSegment
 from schemas import User
+from auth import verify_user,get_current_user_email,remove_access_token,create_user
 from schemas import OTPVerify
+from utils import summarize,transcribe
+from db import Database
+database = Database()
 
    
 
@@ -35,22 +39,24 @@ def generate_random_id():
 @app.post("/signin")
 async def login(user : User):
     print(user)
-    # return verified_user(user)
+    return verify_user(user)
 
 @app.post("/signup")
 async def signup(user : User):
     print(user)
+    return create_user(user)
     # return create_user(user)
 
-@app.post("/verify")
-async def signup(otpVerify: OTPVerify):
-    print(otpVerify)
+# @app.post("/verify")
+# async def signup(otpVerify: OTPVerify):
+#     print(otpVerify)
     # return verify_otp(otpVerify)
 
-@app.post("/logout")
-async def logout(token: str):
+@app.get("/logout")
+async def logout(message:str = Depends(remove_access_token)):
+    # print(token)
     # database.add_blacklisted_token(token)
-    return {"message": "User logged out successfully"}
+    return message
 
     
 
@@ -58,24 +64,18 @@ async def logout(token: str):
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/login")
-async def login(email: str, password: str):
-    # Your login logic here
-    return {"message": "Login successful"}
+@app.get("/transcript/{meeting_id}")
+def getTranscript(meeting_id: str, email: str = Depends(get_current_user_email)):
+    if database.verify_meeting_id(meeting_id,email) == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
+    return transcribe(meeting_id)
 
-    
 
-@app.get("/transcript/{video_id}")
-def getTranscript(video_id: str):
-    from utils import transcribe
-    transcript = transcribe(video_id)
-    return transcript
-
-@app.get("/summary/{video_id}")
-def getSummary(video_id: str):
-    from utils import summarize
-    summary= summarize(video_id)
-    return summary
+@app.get("/summary/{meeting_id}")
+def getSummary(meeting_id:str,email: str = Depends(get_current_user_email)):
+    if database.verify_meeting_id(meeting_id,email) == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
+    return summarize(meeting_id)
 
 
 @app.get("/audio/{video_id}")
@@ -98,17 +98,28 @@ async def read_item(request: Request, video_id: str):
     
 
 
+# @app.post("/uploadfile")
+# async def create_upload_file(file: UploadFile = UploadFile(...)):
+#     print("\n\n\n\n")
+#     print(file.filename)
+#     video_id = generate_random_id() 
+#     with open(f"files/videos/{video_id}", "wb") as buffer:
+#         shutil.copyfileobj(file.file, buffer)
+#     audio = AudioSegment.from_file(f"files/videos/{video_id}")
+#     audio.export(f"files/videos/{video_id}.wav", format="wav")
+#     os.remove(f"files/videos/{video_id}")
+#     return {"video_id": video_id}
+#with jwt authentication
 @app.post("/uploadfile")
-async def create_upload_file(file: UploadFile = UploadFile(...)):
-    print("\n\n\n\n")
-    print(file.filename)
-    video_id = generate_random_id() 
-    with open(f"files/videos/{video_id}", "wb") as buffer:
+async def create_upload_file(file: UploadFile = UploadFile(...) ,email: str = Depends(get_current_user_email)):
+    meeting_id = generate_random_id()
+    with open(f"files/videos/{meeting_id}", "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-    audio = AudioSegment.from_file(f"files/videos/{video_id}")
-    audio.export(f"files/videos/{video_id}.wav", format="wav")
-    os.remove(f"files/videos/{video_id}")
-    return {"video_id": video_id}
+    audio = AudioSegment.from_file(f"files/videos/{meeting_id}")
+    audio.export(f"files/videos/{meeting_id}.wav", format="wav")
+    os.remove(f"files/videos/{meeting_id}")
+    database.add_meeting_id(meeting_id=meeting_id,email=email)
+    return {"video_id": meeting_id}
 
 
 

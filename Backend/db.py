@@ -2,6 +2,8 @@ import mysql.connector
 from mysql.connector import Error
 from schemas import User
 from config import settings
+import json
+
 class Database:
     def __init__(self):
         try:
@@ -24,29 +26,45 @@ class Database:
     
     def get_user(self, username):
         cursor = self.connection.cursor(dictionary=True)
-        query = "SELECT * FROM users WHERE username = %s"
+        query = "SELECT * FROM users WHERE email = %s"
         cursor.execute(query, (username,))
         user = cursor.fetchone()
         cursor.close()
         return user
-
-    def add_user(self, username, password,is_verified=False):
+    
+    def verify_meeting_id(self,meeting_id,email):
         cursor = self.connection.cursor()
-        query = "INSERT INTO users (username, password,is_verified) VALUES (%s, %s, %s)"
+        query = "SELECT * FROM meetings WHERE meeting_id = %s AND email = %s"
+        cursor.execute(query, (meeting_id,email))
+        result = cursor.fetchone()
+        cursor.close()
+        return result is not None
+    
+    def add_meeting_id(self,meeting_id,email):
+        cursor = self.connection.cursor()
+        query = "INSERT INTO meetings (meeting_id, email,is_shared) VALUES (%s, %s, %s)"
+        cursor.execute(query, (meeting_id,email,False))
+        self.connection.commit()
+        cursor.close()
+
+
+    def add_user(self, username, password,is_verified=True):
+        cursor = self.connection.cursor()
+        query = "INSERT INTO users (email, password_hash,is_verified) VALUES (%s, %s, %s)"
         cursor.execute(query, (username, password,is_verified))
         self.connection.commit()
         cursor.close()
 
     def add_blacklisted_token(self, token):
         cursor = self.connection.cursor()
-        query = "INSERT INTO blacklisted_token (token) VALUES (%s)"
+        query = "INSERT INTO blacklistedtokens (token) VALUES (%s)"
         cursor.execute(query, (token,))
         self.connection.commit()
         cursor.close()
 
     def is_token_blacklisted(self, token):
         cursor = self.connection.cursor()
-        query = "SELECT * FROM blacklisted_token WHERE token = %s"
+        query = "SELECT * FROM blacklistedtokens WHERE token = %s"
         cursor.execute(query, (token,))
         result = cursor.fetchone()
         cursor.close()
@@ -54,27 +72,26 @@ class Database:
     
     def insert_transcript(self,transcript):
         cursor = self.connection.cursor()
-        cursor.execute("INSERT INTO Transcript (transcript) VALUES (%s)", (json.dumps(transcript),))
+        cursor.execute("INSERT INTO minutesOfMeetings (transcript) VALUES (%s)", (json.dumps(transcript),))
         self.connection.commit()
         cursor.close()
 
-
-    def get_transcript(self,transcript_id):
+    def get_transcript(self,meeting_id):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM Transcript WHERE id = %s", (transcript_id,))
+        cursor.execute("SELECT transcript FROM minutesOfMeetings WHERE meeting_id = %s", (meeting_id,))
         result = cursor.fetchone()
         cursor.close()
         return result
 
     def insert_summary(self,summary):   
         cursor = self.connection.cursor() 
-        cursor.execute("INSERT INTO Summary (summary) VALUES (%s)", (json.dumps(summary),))
+        cursor.execute("INSERT INTO minutesOfMeetings (summary) VALUES (%s)", (json.dumps(summary),))
         self.connection.commit()
         cursor.close()
 
-    def get_summary(self,summary_id):
+    def get_summary(self,meeting_id):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM Summary WHERE id = %s", (summary_id,))
+        cursor.execute("SELECT summary FROM Summary WHERE meeting_id = %s", (meeting_id,))
         result = cursor.fetchone()
         cursor.close()
         return result

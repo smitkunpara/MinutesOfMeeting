@@ -2,6 +2,7 @@ from db import Database
 import json
 import assemblyai as aai
 from config import settings
+from fastapi import HTTPException,status
 import google.generativeai as genai
 
 database = Database()
@@ -15,7 +16,11 @@ def transcribe(video_id):
         speaker_labels=True,
     )
     transcriber = aai.Transcriber()
-    transcript = transcriber.transcribe(f"files/videos/{video_id}.wav", config)
+    try:
+        transcript = transcriber.transcribe(f"files/videos/{video_id}.wav", config)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
     # transcript = transcriber.transcribe(f"check.mp4", config)
     if transcript.status == aai.TranscriptStatus.error:
         return {"error": transcript.error}

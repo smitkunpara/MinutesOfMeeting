@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     JWT_SECRET: str
     ASSEMBLYAI_API_KEY: str
     GOOGLE_API_KEY: str
+    JWT_ALGORITHM: str
+    JWT_EXPIRES_MINUTES: int
 
     class Config:
         env_file = ".env"

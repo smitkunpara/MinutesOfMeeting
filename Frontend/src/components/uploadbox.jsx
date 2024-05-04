@@ -85,7 +85,7 @@ const Dialog = ({ onClose, ...rest }) => {
                         
                         const response = await axios.post('http://127.0.0.1:8000/uploadfile', formData, {
                             headers: {
-                                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                                'Authorization': `Bearer ${localStorage.getItem('token')}`,
                                 'Content-Type': 'multipart/form-data',
                             },
                         });

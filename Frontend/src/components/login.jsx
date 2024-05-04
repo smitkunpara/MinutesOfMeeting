@@ -25,12 +25,13 @@ const Login = ({ isOpen, onClose }) => {
                 },
             );
             console.log(response.data);
+            localStorage.setItem('token', response.data);
         } catch (error) {
             console.log(error);
         }
         setsigninEmail("");
         setsigninPassword("");
-        // onClose();
+        onClose();
     }
     const signingUP = async () => {
         console.log(signupEmail, signupPassword);
@@ -44,8 +45,9 @@ const Login = ({ isOpen, onClose }) => {
             );
             setsignupEmail("");
             setsignupPassword("");
-            sendOTP();
+            // sendOTP();
             console.log(response.data);
+            localStorage.setItem('token', response.data);
         } catch (error) {
             console.log(error);
         }
