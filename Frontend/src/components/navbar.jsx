@@ -64,6 +64,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
         console.log(Follow);
     };
 
+
     return (
         <>
             <nav className="navbar px-4">
@@ -78,7 +79,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                         <a
                             className="cursor-pointer appearance-none transition group inline-grid grid-flow-col p-3 justify-center items-center rounded-full  font-medium hover:bg-white text-neutral-1000  xl:gap-2">
                             Highlight
-                            <svg stroke-width="0" viewBox="0 0 448 512"
+                            <svg strokeWidth="0" viewBox="0 0 448 512"
                                 className="h-3 w-3 m-1 lg:m-0 text-neutral-500 transition group-hover:text-inherit" height="1em"
                                 width="1em" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -135,7 +136,7 @@ const Navbar = ({ setNormalHighlight, setFollowHighligh }) => {
                         <a
                             className="cursor-pointer appearance-none transition group inline-grid grid-flow-col p-3 justify-center items-center rounded-full  font-medium hover:bg-white text-neutral-1000  xl:gap-2">
                             Export File
-                            <svg stroke-width="0" viewBox="0 0 448 512"
+                            <svg strokeWidth="0" viewBox="0 0 448 512"
                                 className="h-3 w-3 m-1 lg:m-0 text-neutral-500 transition group-hover:text-inherit" height="1em"
                                 width="1em" xmlns="http://www.w3.org/2000/svg">
                                 <path

@@ -1,12 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import './login.css';
 import OTPInput, { ResendOTP } from "otp-input-react";
+import axios from 'axios';
 
 
 
 
 const Login = ({ isOpen, onClose }) => {
     const [OTP, setOTP] = useState("");
+    const [signinEmail, setsigninEmail] = useState("");
+    const [signinPassword, setsigninPassword] = useState("");
+    const [signupEmail, setsignupEmail] = useState("");
+    const [signupPassword, setsignupPassword] = useState("");
+
+
+    const signingIN = async () => {
+        console.log(signinEmail, signinPassword);
+        
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/signin',
+                {
+                    email: signinEmail,
+                    password: signinPassword
+                },
+            );
+            console.log(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+        setsigninEmail("");
+        setsigninPassword("");
+        // onClose();
+    }
+    const signingUP = async () => {
+        console.log(signupEmail, signupPassword);
+        
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/signup',
+                {
+                    email: signupEmail,
+                    password: signupPassword
+                },
+            );
+            setsignupEmail("");
+            setsignupPassword("");
+            sendOTP();
+            console.log(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+        // onClose();
+    }
+
     const swictToSignUp = () => {
         const container = document.getElementById("container");
         if (container) {
@@ -27,9 +72,9 @@ const Login = ({ isOpen, onClose }) => {
             signup.classList.add('hidden');
             otp.classList.remove('hidden');
 
-            
+
         }
-        
+
     }
     return (
         <>
@@ -39,32 +84,31 @@ const Login = ({ isOpen, onClose }) => {
                     <div className="container1" id="container">
                         <div className="form-container sign-up-container">
                             <div className='close-container'>
-                                <form className='form' action="#">
+                                <div className='form' action="#">
                                     <div className='signup-container '>
                                         <h1 className='font-bold'>Create Account</h1>
-                                        <input className='input' id="email" type="email" placeholder="Email" />
-                                        <input className='input' id="password" type="password" placeholder="Password" />
-                                        <button onClick={sendOTP} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Send OTP</button>
+                                        <input className='input' id="email" type="email" placeholder="Email" value={signupEmail} onChange={(e) => setsignupEmail(e.target.value)} />
+                                        <input className='input' id="password" type="password" placeholder="Password" value={signupPassword} onChange={(e) => setsignupPassword(e.target.value)} />
+                                        <button onClick={signingUP} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
                                     </div>
                                     <div className='otp-container hidden'>
                                         <h1 className='font-bold'>Enter OTP received on your Email :</h1>
                                         <OTPInput className='otp-input' value={OTP} onChange={setOTP} OTPLength={4} otpType="number" disabled={false} secure />
                                         <ResendOTP onResendClick={() => console.log("Resend clicked")} />
-                                        <button className="rounded-full my-4 border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
+                                        <button className="rounded-full my-4 border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Verify</button>
                                     </div>
-                                </form>
+                                </div>
                                 <button onClick={onClose} className='close'></button>
                             </div>
                         </div>
                         <div className="form-container sign-in-container">
-
-                            <form className='form' action="#">
+                            <div className='form'>
                                 <h1 className='font-bold'>Sign in</h1>
-                                <input className='input' id="Email" type="email" placeholder="Email" />
-                                <input className='input' id="Password" type="password" placeholder="Password" />
+                                <input className='input' id="Email" type="email" placeholder="Email" value={signinEmail} onChange={(e) => setsigninEmail(e.target.value)} />
+                                <input className='input' id="Password" type="password" placeholder="Password" value={signinPassword} onChange={(e) => setsigninPassword(e.target.value)} />
                                 <a className='text-base text-gray-700 no-underline my-6'>Forgot your password?</a>
-                                <button className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
-                            </form>
+                                <button onClick={signingIN} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
+                            </div>
                         </div>
                         <div className="overlay-container">
                             <div className="overlay">
