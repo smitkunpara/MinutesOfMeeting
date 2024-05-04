@@ -10,25 +10,7 @@ import string
 import mysql.connector
 import json
 from pydub import AudioSegment
-
-cnx = mysql.connector.connect(
-    host="localhost",  # or use "127.0.0.1"
-    port=3306,
-    user="root",
-    password="Sujal@121",
-    database="mom"
-)
-
-# Create a cursor object
-cursor = cnx.cursor()
-
-
-def generate_random_id():
-    characters = string.ascii_letters + string.digits
-    random_id = ''.join(random.choice(characters) for _ in range(8))
-    return random_id
-
-    
+from config import settings
 
    
 
@@ -43,6 +25,25 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
+
+cnx = mysql.connector.connect(
+    host=settings.MYSQL_HOST,  
+    port=settings.MYSQL_PORT,
+    user=settings.MYSQL_USERNAME,
+    password=settings.MYSQL_PASSWORD,
+    database=settings.MYSQL_DATABASE
+)
+
+# Create a cursor object
+cursor = cnx.cursor()
+
+
+def generate_random_id():
+    characters = string.ascii_letters + string.digits
+    random_id = ''.join(random.choice(characters) for _ in range(8))
+    return random_id
+
+    
 
 @app.get("/")
 def read_root():
