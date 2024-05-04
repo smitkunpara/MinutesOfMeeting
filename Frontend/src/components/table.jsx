@@ -6,81 +6,6 @@ import axios from "axios";
 import "./table.css";
 import Markdown from 'react-markdown';
 
-const FetchData = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    setLoading(true);
-    toast.promise(
-      new Promise((resolve, reject) => {
-        (async () => {
-          try {
-            console.log("fetching summary");
-            const response = await axios.get('http://127.0.0.1:8000/transcript');
-            console.log("got it");
-            resolve();
-            setData(response.data);
-            localStorage.setItem('JSON_DATA', JSON.stringify(response.data));
-            // setData(processTranscript(response.data));
-            setLoading(false);
-          } catch (error) {
-            reject();
-            console.log(error);
-            setLoading(false);
-          }
-        })();
-      }),
-      {
-        pending: "Generating transcript...",
-        success: 'Transcript generated successfully!',
-        error: 'Transcript generation failed',
-      },
-      {
-        position: "top-center",
-        autoClose: 2000,
-      }
-    );
-  }, []);
-  return { loading, data };
-};
-
-const FetchSummary = () => {
-  const [loding, setLoading] = useState(false);
-  const [summaryData, setSummaryData] = useState(false);
-  useEffect(() => {
-    setLoading(true);
-    toast.promise(
-      new Promise((resolve, reject) => {
-        (async () => {
-          try {
-            const response = await axios.get('http://127.0.0.1:8000/summary');
-            //sleep for 5 seconds
-            // await new Promise(r => setTimeout(r, 5000));
-            // const response = { data: " Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque voluptatem, adipisci saepe voluptate vitae asperiores dignissimos omnis laudantium fuga officiis architecto perspiciatis ea dolorum cupiditate placeat consectetur neque natus error. Natus quos consequatur est deleniti ullam quasi molestiae? Quisquam enim blanditiis ducimus praesentium commodi neque magni quas, ex asperiores provident iste veniam? Ipsum maxime ullam, nam neque dolor facilis temporibus voluptatum provident iusto, officia obcaecati, quis fuga ipsa nesciunt? Sequi cumque ad saepe tempore? Facere ratione enim placeat. Quo at excepturi a sunt, aliquid, repellat numquam aperiam voluptas perspiciatis inventore amet vitae recusandae et quae, minus reiciendis sit nihil natus?"}
-            resolve();
-            setSummaryData(response.data);
-            setLoading(false);
-          } catch (error) {
-            reject();
-            console.log(error);
-            setLoading(false);
-          }
-        })();
-      }),
-      {
-        pending: "Generating summary...",
-        success: 'Summary generated successfully!',
-        error: 'Summary generation failed',
-      },
-      {
-        position: "top-center",
-        autoClose: 2000,
-      }
-    );
-  }, []);
-  return { loding, summaryData };
-};
-
 
 const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: FollowHighlight, setAudioTime }) => {
   const [search, setSearch] = useState('');
@@ -97,7 +22,13 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
             setLoadingTranscript(true);
             setSummaryLoading(true);
             console.log("fetching transcript");
-            const response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`);
+            const response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`,
+              {
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }
+            );
             console.log("got it");
             resolve(response.data);
             localStorage.setItem('JSON_DATA', JSON.stringify(response.data));
@@ -124,7 +55,13 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
         new Promise((resolve, reject) => {
           (async () => {
             try {
-              const response = await axios.get(`http://127.0.0.1:8000/summary/${ResponseID}`);
+              const response = await axios.get(`http://127.0.0.1:8000/summary/${ResponseID}`,
+              {
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }
+            );
               resolve(response.data);
               setSummaryData(response.data);
               setSummaryLoading(false);
