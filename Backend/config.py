@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: str
     JWT_ALGORITHM: str
     JWT_EXPIRES_MINUTES: int
+    EMAIL: str
+    EMAIL_PASSWORD: str
 
     class Config:
         env_file = ".env"

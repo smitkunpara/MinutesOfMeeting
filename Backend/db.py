@@ -32,6 +32,13 @@ class Database:
         cursor.close()
         return user
     
+    def update_user_verification_status(self, username, is_verified):
+        cursor = self.connection.cursor()
+        query = "UPDATE users SET is_verified = %s WHERE email = %s"
+        cursor.execute(query, (is_verified, username))
+        self.connection.commit()
+        cursor.close()
+    
     def verify_meeting_id(self,meeting_id,email):
         cursor = self.connection.cursor()
         query = "SELECT * FROM meetings WHERE meeting_id = %s AND email = %s"
@@ -102,7 +109,16 @@ class Database:
         result = cursor.fetchone()
         cursor.close()
         return result
-
+    
+    def remove_user(self,username):
+        #delete user also from meetings and minutesOfMeetings
+        cursor = self.connection.cursor()
+        cursor.execute("DELETE FROM users WHERE email = %s", (username,))
+        cursor.execute("DELETE FROM meetings WHERE email = %s", (username,))
+        cursor.execute("DELETE FROM minutesOfMeetings WHERE email = %s", (username,))
+        self.connection.commit()
+        cursor.close()
+        
 
 
 

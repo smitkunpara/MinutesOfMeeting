@@ -6,4 +6,4 @@ class User(BaseModel):
 
 class OTPVerify(BaseModel):
     email: str
-    otp: int
+    otp: str
