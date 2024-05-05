@@ -76,7 +76,7 @@ def verify_otp(email: str, otp: str):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect OTP")
     user_otp.pop(email)
     database.update_user_verification_status(email, True)
-    return {"message": "User verified successfully"}
+    return {"message": "User verified successfully", "token": create_access_token(data={"sub": email}) }
 
 def verify_access_token(token):
     try:

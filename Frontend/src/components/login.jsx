@@ -87,11 +87,14 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                 },
             );
             setOTP();
+            console.log(response.data);
+            localStorage.setItem('token', response.data['token']);
+            localStorage.setItem('email', signupEmail);
             setsignupEmail("");
             setsignupPassword("");
-            console.log(response.data);
             SuccessNotification(response.data['message']);
             onClose();
+            LoggedIn();
         } catch (error) {
             console.log(error.response.data['detail']);
             ErrorNotification(error.response.data['detail']);
