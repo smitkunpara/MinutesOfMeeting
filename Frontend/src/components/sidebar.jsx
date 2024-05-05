@@ -42,7 +42,7 @@ const SideBar = ({ isOpenSideBar, isLoggedIn, meetings }) => {
                 sidebar: {
                     zIndex: 2,
                     width: "20rem",
-                    position: "absolute",
+                    position: "fixed",
                     top: 0,
                     bottom: 0,
                     transition: "transform .3s ease-out",

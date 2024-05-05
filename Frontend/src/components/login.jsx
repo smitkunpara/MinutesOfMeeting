@@ -26,6 +26,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
             );
             console.log(response.data);
             localStorage.setItem('token', response.data);
+            localStorage.setItem('email', signinEmail);
             setsigninEmail("");
             setsigninPassword("");
             SuccessNotification("Logged In Successfully !!");
@@ -38,16 +39,15 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
     }
     const signingUP = async () => {
         console.log(signupEmail, signupPassword);
-        sendOTP();
         try {
             const response = await axios.post('http://127.0.0.1:8000/signup',
-            {
-                email: signupEmail,
-                password: signupPassword
-            },
-        );
-            setsignupEmail("");
-            setsignupPassword("");
+                {
+                    email: signupEmail,
+                    password: signupPassword
+                },
+            );
+            SuccessNotification(response.data['message']);
+            sendOTP();
             console.log(response.data);
             localStorage.setItem('token', response.data);
         } catch (error) {
@@ -70,16 +70,34 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
         }
     }
     const sendOTP = () => {
-        const signup = document.querySelector('.signup-container');
-        const otp = document.querySelector('.otp-container');
-        if (signup && otp) {
-            signup.classList.add('hidden');
-            otp.classList.remove('hidden');
-
-
+        const signupContainer = document.querySelector('.signup-container');
+        const otpContainer = document.querySelector('.otp-container');
+        if (signupContainer && otpContainer) {
+            signupContainer.classList.add('hidden');
+            otpContainer.classList.remove('hidden');
+        }
+    }
+    const verifyOTP = async () => {
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/verify',
+                {
+                    email: signupEmail,
+                    otp: OTP
+                },
+            );
+            setOTP();
+            setsignupEmail("");
+            setsignupPassword("");
+            console.log(response.data);
+            SuccessNotification(response.data['message']);
+            onClose();
+        } catch (error) {
+            console.log(error.response.data['detail']);
         }
 
+
     }
+
     return (
         <>
             {isOpen && (
@@ -95,7 +113,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                         <p className='text-base text-gray-700 my-2'>OTP will be sent ton your Email id.</p>
                                         <button onClick={signingUP} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
                                     </div>
-                                        <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#fc445c]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
+                                    <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#fc445c]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
                                     <div className='otp-container hidden'>
                                         <h1 className='font-bold'>Enter OTP received on your Email :</h1>
                                         <OTPInput className='otp-input' value={OTP} onChange={setOTP} OTPLength={4} otpType="number" disabled={false} secure />
@@ -130,7 +148,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                         <h1 className='font-bold'>Enter OTP received on your Email :</h1>
                                         <OTPInput className='otp-input' value={OTP} onChange={setOTP} OTPLength={4} otpType="number" disabled={false} secure />
                                         <ResendOTP onResendClick={() => console.log("Resend clicked")} />
-                                        <button className="rounded-full my-4 border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Verify</button>
+                                        <button onClick={verifyOTP} className="rounded-full my-4 border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Verify</button>
                                     </div>
                                 </div>
                                 <button onClick={onClose} className='close'></button>

@@ -40,7 +40,7 @@ async def signup(user : User):
     # return create_user(user)
 
 @app.post("/verify")
-async def signup(otpVerify: OTPVerify):
+async def verify(otpVerify: OTPVerify):
     print(otpVerify)
     return verify_otp(otpVerify.email,otpVerify.otp)
 

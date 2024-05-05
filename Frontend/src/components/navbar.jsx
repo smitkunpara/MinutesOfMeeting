@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './navbar.css';
 import Logo from '../assets/logo2.png';
 import UploadBox from './uploadbox';
+
 import Switch from '@mui/material/Switch';
 import { Link } from 'react-router-dom';
 

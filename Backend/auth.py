@@ -63,14 +63,16 @@ def create_user(user:User):
     return send_otp_on_email(user.email, otp)
 
 def verify_otp(email: str, otp: str):
+    
     user=database.get_user(email)
+    print(type(user['is_verified']),user['is_verified'])
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    if user['is_verified'] == True:
+    if user['is_verified'] != 0:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User already verified")
     if user_otp.get(email) is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid OTP request")
-    if user_otp.get(email) != otp:
+    if user_otp.get(email) == otp:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect OTP")
     user_otp.pop(email)
     database.update_user_verification_status(email, True)
