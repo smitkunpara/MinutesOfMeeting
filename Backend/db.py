@@ -47,6 +47,13 @@ class Database:
         self.connection.commit()
         cursor.close()
 
+    def get_meetings(self,email):
+        cursor = self.connection.cursor()
+        query = "SELECT meeting_id FROM meetings WHERE email = %s"
+        cursor.execute(query, (email,))
+        result = cursor.fetchall()
+        cursor.close()
+        return result
 
     def add_user(self, username, password,is_verified=True):
         cursor = self.connection.cursor()

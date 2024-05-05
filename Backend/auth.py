@@ -30,12 +30,14 @@ def verify_password(plain_password, hashed_password):
 
 def verify_user(user:User):
     userdata = database.get_user(user.email)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    # if get_password_hash(user.password) != userdata['password_hash']:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
+    if not userdata:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found !!")
     # if userdata['is_verified'] == False:
     #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not verified")
-    if not verify_password(user.email, userdata['password_hash']):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
+    if not verify_password(user.password, userdata['password_hash']):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password !!")
     return create_access_token(data={"sub": userdata['email']})
 
 def create_user(user:User):

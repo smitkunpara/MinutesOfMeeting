@@ -1,12 +1,57 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './home.css';
 import Logo from '../assets/logo2.png';
 import 'react-toastify/dist/ReactToastify.css';
 import UploadBox from './uploadbox';
 import Login from './login';
+import SideBar from './sidebar';
+import axios from 'axios';
+import { toast, Bounce } from "react-toastify";
 
 const Home = () => {
+
+  const [meetings, setMeetings] = useState([]);
+
+  let token = localStorage.getItem('token');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isOpenSideBar, setIsOpenSideBar] = useState(false);
+
+
+  useEffect(() => {
+    if (token) {
+      axios.get('http://127.0.0.1:8000/get_meetings', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }).then((res) => {
+        console.log(res.data);
+        setMeetings(res.data);
+        setIsLoggedIn(true);
+        console.log(token);
+      }).catch((err) => {
+        toast.error('You have been logged out.', {
+          position: "top-center",
+          autoClose: 2000,
+          // hideProgressBar: false,
+          // closeOnClick: true,
+          // pauseOnHover: true,
+          // draggable: true,
+          // progress: undefined,
+          theme: "light",
+          transition: Bounce,
+          });
+        console.log(token);
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+      });
+    }
+  }, [isLoggedIn]);
+
   
+
+  const OpenSideBarSetter = () => {
+    setIsOpenSideBar(!isOpenSideBar);
+  };
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -28,6 +73,11 @@ const Home = () => {
         <nav className="navbar px-4 ">
           <div className='flex w-full justify-between '>
             <div className='flex w-full lg:justify-start md:justify-start justify-center'>
+              <button onClick={OpenSideBarSetter} className="flex text-white items-center justify-center pl-6 mr-6">
+                <svg xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 -960 960 960" width="36">
+                  <path d="M160-240q-17 0-28.5-11.5T120-280q0-17 11.5-28.5T160-320h640q17 0 28.5 11.5T840-280q0 17-11.5 28.5T800-240H160Zm0-200q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520h640q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440H160Zm0-200q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h640q17 0 28.5 11.5T840-680q0 17-11.5 28.5T800-640H160Z" />
+                </svg>
+              </button>
               <a onClick={() => scrollToSection('s1')} className="cursor-pointer navbar-logo flex items-center font-medium ">
                 <img className="logo" src={Logo} alt="Logo" />
                 <span className="logo-text mr-6 text-4xl font-bold">MOM.AI</span>
@@ -62,13 +112,13 @@ const Home = () => {
                 </svg>
               </div>
             </button>
-            <Login isOpen={isOpenLogin} onClose={() => setIsOpenLogin(false)} />
+            <Login isOpen={isOpenLogin} LoggedIn={()=> setIsLoggedIn(true)} onClose={() => setIsOpenLogin(false)} />
             <button onClick={handleDialogOpenLogin}
               className="lg:flex md:flex hidden text-white items-center justify-center bg-blue-500 border-0 py-4 px-6 mr-6 focus:outline-none hover:bg-blue-600 rounded-full">
               <div className="shadow-neutral-1000/25 -m-[15px] grid items-center justify-center rounded-full p-2.5  shadow-xl bg-white text-blue-600  rtl:-scale-x-100"
                 bis_skin_checked="1">
                 <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="h-[24px] w-[24px]" height="1em" width="1em" viewBox="0 -960 960 960">
-                  <path d="M523.59-111.87q-19.16 0-32.33-13.17-13.17-13.18-13.17-32.33t13.17-32.33q13.17-13.17 32.33-13.17h233.54v-554.26H523.59q-19.16 0-32.33-13.17-13.17-13.18-13.17-32.33t13.17-32.33q13.17-13.17 32.33-13.17h233.54q37.78 0 64.39 26.61t26.61 64.39v554.26q0 37.78-26.61 64.39t-64.39 26.61H523.59ZM428.35-434.5H157.37q-19.15 0-32.33-13.17-13.17-13.18-13.17-32.33t13.17-32.33q13.18-13.17 32.33-13.17h270.98l-69.5-69.5q-12.68-12.67-12.68-31.07 0-18.39 12.68-31.82 12.67-13.68 31.7-14.06 19.04-.38 32.71 13.3l146.83 146.82q13.43 13.68 13.43 31.83t-13.43 31.83L423.26-301.35q-13.43 13.68-32.21 13.3-18.77-.38-32.2-14.06-12.68-13.43-12.3-32.21.38-18.77 13.06-31.44l68.74-68.74Z"/>
+                  <path d="M523.59-111.87q-19.16 0-32.33-13.17-13.17-13.18-13.17-32.33t13.17-32.33q13.17-13.17 32.33-13.17h233.54v-554.26H523.59q-19.16 0-32.33-13.17-13.17-13.18-13.17-32.33t13.17-32.33q13.17-13.17 32.33-13.17h233.54q37.78 0 64.39 26.61t26.61 64.39v554.26q0 37.78-26.61 64.39t-64.39 26.61H523.59ZM428.35-434.5H157.37q-19.15 0-32.33-13.17-13.17-13.18-13.17-32.33t13.17-32.33q13.18-13.17 32.33-13.17h270.98l-69.5-69.5q-12.68-12.67-12.68-31.07 0-18.39 12.68-31.82 12.67-13.68 31.7-14.06 19.04-.38 32.71 13.3l146.83 146.82q13.43 13.68 13.43 31.83t-13.43 31.83L423.26-301.35q-13.43 13.68-32.21 13.3-18.77-.38-32.2-14.06-12.68-13.43-12.3-32.21.38-18.77 13.06-31.44l68.74-68.74Z" />
                 </svg>
               </div>
             </button>
@@ -76,12 +126,12 @@ const Home = () => {
         </nav>
       </header>
       <div className='p-4'>
+        <SideBar isOpenSideBar={isOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings}/>
 
-
-        <section id='s1' className="text-gray-600 body-font lg:p-16  rounded-lg">
-          <div className="h-[72vh] container px-5 py-28 mx-auto flex flex-col lg:flex-row items-center justify-center">
+        <section id='s1' className="text-gray-600 body-font lg:p-16 rounded-lg">
+          <div className="md:h-[90vh] lg:h-auto container px-5 py-28 mx-auto flex flex-col lg:flex-row items-center justify-center">
             <div className='flex flex-col lg:flex-row items-center justify-center transform scale-100 transition-transform duration-300 ease-in-out hover:scale-110 '>
-              <img alt="ecommerce" className="lg:w-1/2 lg:h-auto mb-8 object-cover object-center rounded order-1 lg:order-2" style={{ objectFit: 'contain' }} src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=1280,quality=75,format=auto/Audio_to_Text_26b67a012c/Audio_to_Text_26b67a012c.png" />
+              <img alt="ecommerce" className="lg:w-1/2 lg:h-auto md:h-80 mx-8  object-cover object-center rounded order-1 lg:order-2" style={{ objectFit: 'contain' }} src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=1280,quality=75,format=auto/Audio_to_Text_26b67a012c/Audio_to_Text_26b67a012c.png" />
               <div className="flex-column text-center lg:p-12 py-2 lg:w-1/2 lg:pr-10 lg:py-6 mb-6 lg:mb-0 justify-center items-center order-2 lg:order-1">
                 <h1 className="text-gray-900 lg:text-5xl text-3xl title-font font-bold">Audio to Text</h1>
                 <p className="leading-relaxed mb-4 my-4">Transcribe audio to text automatically, using AI. Over +120 languages supported.</p>

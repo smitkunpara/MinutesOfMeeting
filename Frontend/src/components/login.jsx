@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './login.css';
 import OTPInput, { ResendOTP } from "otp-input-react";
 import axios from 'axios';
-import { toast,Bounce } from "react-toastify";
+import {SuccessNotification,ErrorNotification} from './notification';
 
 
-
-const Login = ({ isOpen, onClose }) => {
+const Login = ({ isOpen, onClose, LoggedIn }) => {
     const [OTP, setOTP] = useState("");
     const [signinEmail, setsigninEmail] = useState("");
     const [signinPassword, setsigninPassword] = useState("");
@@ -26,27 +25,18 @@ const Login = ({ isOpen, onClose }) => {
             );
             console.log(response.data);
             localStorage.setItem('token', response.data);
+            setsigninEmail("");
+            setsigninPassword("");
+            SuccessNotification("Logged In Successfully !!");
+            onClose();
+            LoggedIn();
         } catch (error) {
-            console.log(error);
+            ErrorNotification(error.response.data['detail']);
+            // console.log(error.response.data['detail']);
         }
-        setsigninEmail("");
-        setsigninPassword("");
-        onClose();
-        toast.success('Successfully Logedin !!', {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Bounce,
-            });
     }
     const signingUP = async () => {
         console.log(signupEmail, signupPassword);
-        
         try {
             const response = await axios.post('http://127.0.0.1:8000/signup',
                 {
@@ -60,7 +50,7 @@ const Login = ({ isOpen, onClose }) => {
             console.log(response.data);
             localStorage.setItem('token', response.data);
         } catch (error) {
-            console.log(error);
+            console.log(error.details);
         }
         // onClose();
     }

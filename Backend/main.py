@@ -63,6 +63,9 @@ async def logout(message:str = Depends(remove_access_token)):
     # database.add_blacklisted_token(token)
     return message
 
+@app.get("/get_meetings")
+async def get_meetings(email: str = Depends(get_current_user_email)):
+    return database.get_meetings(email)
     
 
 @app.get("/")
