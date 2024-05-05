@@ -58,7 +58,7 @@ def create_user(user:User):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exists")
     hashed_password = get_password_hash(user.password)
     otp = random.randint(1000,9999)
-    user_otp[user.email] = otp
+    user_otp[user.email] = str(otp)
     database.add_user(user.email, hashed_password, False)
     return send_otp_on_email(user.email, otp)
 
@@ -72,7 +72,7 @@ def verify_otp(email: str, otp: str):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User already verified")
     if user_otp.get(email) is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid OTP request")
-    if user_otp.get(email) == otp:
+    if user_otp[email] != otp:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect OTP")
     user_otp.pop(email)
     database.update_user_verification_status(email, True)

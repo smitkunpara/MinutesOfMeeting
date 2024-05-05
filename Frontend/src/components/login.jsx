@@ -52,6 +52,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
             localStorage.setItem('token', response.data);
         } catch (error) {
             console.log(error.details);
+            ErrorNotification(error.response.data['detail']);
         }
         // onClose();
     }
@@ -93,6 +94,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
             onClose();
         } catch (error) {
             console.log(error.response.data['detail']);
+            ErrorNotification(error.response.data['detail']);
         }
 
 
