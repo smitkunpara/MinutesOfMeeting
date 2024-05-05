@@ -6,13 +6,14 @@ import UploadBox from './uploadbox';
 import Login from './login';
 import SideBar from './sidebar';
 import axios from 'axios';
-import { toast, Bounce } from "react-toastify";
+import { WarningNotification } from './notification';
 
 const Home = () => {
 
   const [meetings, setMeetings] = useState([]);
 
   let token = localStorage.getItem('token');
+  let email = localStorage.getItem('email');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOpenSideBar, setIsOpenSideBar] = useState(false);
 
@@ -29,17 +30,7 @@ const Home = () => {
         setIsLoggedIn(true);
         console.log(token);
       }).catch((err) => {
-        toast.error('You have been logged out.', {
-          position: "top-center",
-          autoClose: 2000,
-          // hideProgressBar: false,
-          // closeOnClick: true,
-          // pauseOnHover: true,
-          // draggable: true,
-          // progress: undefined,
-          theme: "light",
-          transition: Bounce,
-          });
+        WarningNotification("You have been logged out !!")
         console.log(token);
         localStorage.removeItem('token');
         setIsLoggedIn(false);
@@ -47,7 +38,26 @@ const Home = () => {
     }
   }, [isLoggedIn]);
 
-  
+  const Logout = async () => {  
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    setIsLoggedIn(false);
+    try {
+    const response = await axios.get('http://127.0.0.1:8000/logout', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    }
+    catch (error) {
+      console.log(error);
+      ErrorNotification("Error Logging Out !!");
+    }
+
+  };
+
+
 
   const OpenSideBarSetter = () => {
     setIsOpenSideBar(!isOpenSideBar);
@@ -72,8 +82,8 @@ const Home = () => {
       <header className="sticky top-0 bg-[#f7f7f8] flex w-full text-gray-600 body-font z-[2000]">
         <nav className="navbar px-4 ">
           <div className='flex w-full justify-between '>
-            <div className='flex w-full lg:justify-start md:justify-start justify-center'>
-              <button onClick={OpenSideBarSetter} className="flex text-white items-center justify-center pl-6 mr-6">
+            <div className='flex w-full lg:justify-start'>
+              <button onClick={OpenSideBarSetter} className="flex text-white items-center justify-center pl-4 mr-2">
                 <svg xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 -960 960 960" width="36">
                   <path d="M160-240q-17 0-28.5-11.5T120-280q0-17 11.5-28.5T160-320h640q17 0 28.5 11.5T840-280q0 17-11.5 28.5T800-240H160Zm0-200q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520h640q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440H160Zm0-200q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h640q17 0 28.5 11.5T840-680q0 17-11.5 28.5T800-640H160Z" />
                 </svg>
@@ -98,7 +108,7 @@ const Home = () => {
               </div>
             </div>
             <UploadBox isOpen={isOpenUpload} onClose={() => setIsOpenUpload(false)} />
-            <button onClick={handleDialogOpenUpload}
+            {/* <button onClick={handleDialogOpenUpload}
               className="lg:flex md:flex hidden text-white items-center justify-center bg-blue-500 border-0 py-4 px-6 mr-6 focus:outline-none hover:bg-blue-600 rounded-full">
               <div className="shadow-neutral-1000/25 -m-[15px] grid items-center justify-center rounded-full p-2.5  shadow-xl bg-white text-blue-600  rtl:-scale-x-100"
                 bis_skin_checked="1">
@@ -111,22 +121,66 @@ const Home = () => {
                   <polyline points="16 16 12 12 8 16"></polyline>
                 </svg>
               </div>
-            </button>
-            <Login isOpen={isOpenLogin} LoggedIn={()=> setIsLoggedIn(true)} onClose={() => setIsOpenLogin(false)} />
-            <button onClick={handleDialogOpenLogin}
-              className="lg:flex md:flex hidden text-white items-center justify-center bg-blue-500 border-0 py-4 px-6 mr-6 focus:outline-none hover:bg-blue-600 rounded-full">
-              <div className="shadow-neutral-1000/25 -m-[15px] grid items-center justify-center rounded-full p-2.5  shadow-xl bg-white text-blue-600  rtl:-scale-x-100"
-                bis_skin_checked="1">
-                <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="h-[24px] w-[24px]" height="1em" width="1em" viewBox="0 -960 960 960">
-                  <path d="M523.59-111.87q-19.16 0-32.33-13.17-13.17-13.18-13.17-32.33t13.17-32.33q13.17-13.17 32.33-13.17h233.54v-554.26H523.59q-19.16 0-32.33-13.17-13.17-13.18-13.17-32.33t13.17-32.33q13.17-13.17 32.33-13.17h233.54q37.78 0 64.39 26.61t26.61 64.39v554.26q0 37.78-26.61 64.39t-64.39 26.61H523.59ZM428.35-434.5H157.37q-19.15 0-32.33-13.17-13.17-13.18-13.17-32.33t13.17-32.33q13.18-13.17 32.33-13.17h270.98l-69.5-69.5q-12.68-12.67-12.68-31.07 0-18.39 12.68-31.82 12.67-13.68 31.7-14.06 19.04-.38 32.71 13.3l146.83 146.82q13.43 13.68 13.43 31.83t-13.43 31.83L423.26-301.35q-13.43 13.68-32.21 13.3-18.77-.38-32.2-14.06-12.68-13.43-12.3-32.21.38-18.77 13.06-31.44l68.74-68.74Z" />
+            </button> */}
+            <div className="navbar-option navbar-dropdown flex justify-center">
+              {/* <a
+                className="cursor-pointer appearance-none transition group inline-grid grid-flow-col p-3 justify-center items-center rounded-full  font-medium hover:bg-white text-neutral-1000  xl:gap-2">
+                Highlight
+                <svg strokeWidth="0" viewBox="0 0 448 512"
+                  className="h-3 w-3 m-1 lg:m-0 text-neutral-500 transition group-hover:text-inherit" height="1em"
+                  width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z">
+                  </path>
                 </svg>
-              </div>
+              </a> */}
+              <button className="text-white items-center justify-center mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32">
+                <path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z" />
+              </svg>
             </button>
+              <div className="navbar-dropdown-content left-[-150px]">
+                <div className="top-full -mt-4 lg:-ml-12 lg:mr-6" bis_skin_checked="1">
+                  <ul className="w-full" id="headlessui-menu-items-:Rjioom:" role="menu" tabIndex="0"
+                    data-headlessui-state="">
+                    <div className="rounded-2xl bg-white shadow-2xl lg:max-w-screen-xl" bis_skin_checked="1">
+                      <div className="p-2" bis_skin_checked="1">
+                        <div className="grid max-w-3xl  gap-2 rounded-xl bg-[#f7f7f8] p-4"
+                          bis_skin_checked="1">
+                          {isLoggedIn&&(<a 
+                            className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 bg-[#f7f7f8] hover:bg-white md:gap-4 md:p-6">
+                            <div className="grid grid-flow-col content-start items-center justify-start justify-items-start gap-3"
+                              bis_skin_checked="1">
+                              <svg fill='blue' xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480v58q0 59-40.5 100.5T740-280q-35 0-66-15t-52-43q-29 29-65.5 43.5T480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480v58q0 26 17 44t43 18q26 0 43-18t17-44v-58q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93h200v80H480Zm0-280q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z"/></svg>
+                              <h2 className="font-medium leading-tight tracking-tight">{email}
+                              </h2>
+                            </div>
+                          </a>)}
+                          <a onClick={ isLoggedIn ? ()=>{localStorage.removeItem('token'); setIsLoggedIn(false);} : handleDialogOpenLogin}
+                            className="appearance-none transition group grid-row-col grid gap-2 rounded-lg p-3 bg-[#f7f7f8] hover:bg-white md:gap-4 md:p-6">
+                            <div className="grid grid-flow-col content-start items-center justify-start justify-items-start gap-3"
+                              bis_skin_checked="1">
+                              <svg fill='blue' xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                                <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h240q17 0 28.5 11.5T480-160q0 17-11.5 28.5T440-120H200Zm487-320H400q-17 0-28.5-11.5T360-480q0-17 11.5-28.5T400-520h287l-75-75q-11-11-11-27t11-28q11-12 28-12.5t29 11.5l143 143q12 12 12 28t-12 28L669-309q-12 12-28.5 11.5T612-310q-11-12-10.5-28.5T613-366l74-74Z"/>
+                                </svg>
+                              <h2 className="font-medium leading-tight tracking-tight">{isLoggedIn ? 'Logout' : 'Login'}
+                              </h2>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <Login isOpen={isOpenLogin} LoggedIn={() => setIsLoggedIn(true)} onClose={() => setIsOpenLogin(false)} />
+            
           </div>
         </nav>
       </header>
       <div className='p-4'>
-        <SideBar isOpenSideBar={isOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings}/>
+        <SideBar isOpenSideBar={isOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings} />
 
         <section id='s1' className="text-gray-600 body-font lg:p-16 rounded-lg">
           <div className="md:h-[90vh] lg:h-auto container px-5 py-28 mx-auto flex flex-col lg:flex-row items-center justify-center">

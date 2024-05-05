@@ -17,5 +17,13 @@ const ErrorNotification = (message) => {
         transition: Bounce,
         });
     }
+const WarningNotification = (message) => {
+    toast.warn(message, {
+        position: "top-center",
+        autoClose: 2000,
+        theme: "colored",
+        transition: Bounce,
+        });
+    }
 
-export {SuccessNotification,ErrorNotification};
+export {SuccessNotification,ErrorNotification,WarningNotification};

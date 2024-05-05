@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import './login.css';
 import OTPInput, { ResendOTP } from "otp-input-react";
 import axios from 'axios';
-import {SuccessNotification,ErrorNotification} from './notification';
+import { SuccessNotification, ErrorNotification } from './notification';
 
 
 const Login = ({ isOpen, onClose, LoggedIn }) => {
     const [OTP, setOTP] = useState("");
+    const [onSignin, setOnSignin] = useState(true);
     const [signinEmail, setsigninEmail] = useState("");
     const [signinPassword, setsigninPassword] = useState("");
     const [signupEmail, setsignupEmail] = useState("");
@@ -15,7 +16,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
 
     const signingIN = async () => {
         console.log(signinEmail, signinPassword);
-        
+
         try {
             const response = await axios.post('http://127.0.0.1:8000/signin',
                 {
@@ -37,16 +38,16 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
     }
     const signingUP = async () => {
         console.log(signupEmail, signupPassword);
+        sendOTP();
         try {
             const response = await axios.post('http://127.0.0.1:8000/signup',
-                {
-                    email: signupEmail,
-                    password: signupPassword
-                },
-            );
+            {
+                email: signupEmail,
+                password: signupPassword
+            },
+        );
             setsignupEmail("");
             setsignupPassword("");
-            // sendOTP();
             console.log(response.data);
             localStorage.setItem('token', response.data);
         } catch (error) {
@@ -83,6 +84,37 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
         <>
             {isOpen && (
                 <div className='login-container' id='login-container'>
+                    <div className="container2" >
+                        {!onSignin &&
+                            <div className="form-container sign-in-container">
+                                <div className='form'>
+                                    <div className='signup-container '>
+                                        <h1 className='font-bold'>Create Account</h1>
+                                        <input className='input' id="email" type="email" placeholder="Email" value={signupEmail} onChange={(e) => setsignupEmail(e.target.value)} />
+                                        <input className='input' id="password" type="password" placeholder="Password" value={signupPassword} onChange={(e) => setsignupPassword(e.target.value)} />
+                                        <p className='text-base text-gray-700 my-2'>OTP will be sent ton your Email id.</p>
+                                        <button onClick={signingUP} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
+                                    </div>
+                                        <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#fc445c]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
+                                    <div className='otp-container hidden'>
+                                        <h1 className='font-bold'>Enter OTP received on your Email :</h1>
+                                        <OTPInput className='otp-input' value={OTP} onChange={setOTP} OTPLength={4} otpType="number" disabled={false} secure />
+                                        <ResendOTP onResendClick={() => console.log("Resend clicked")} />
+                                        <button className="rounded-full my-4 border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Verify</button>
+                                    </div>
+                                </div>
+                            </div>}
+                        {onSignin &&
+                            <div className="form-container sign-in-container">
+                                <div className='form'>
+                                    <h1 className='font-bold'>Sign in</h1>
+                                    <input className='input' type="email" placeholder="Email" value={signinEmail} onChange={(e) => setsigninEmail(e.target.value)} />
+                                    <input className='input' type="password" placeholder="Password" value={signinPassword} onChange={(e) => setsigninPassword(e.target.value)} />
+                                    <button onClick={signingIN} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white my-2 font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
+                                    <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#fc445c]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign up</button>
+                                </div>
+                            </div>}
+                    </div>
 
                     <div className="container1" id="container">
                         <div className="form-container sign-up-container">

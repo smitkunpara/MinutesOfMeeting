@@ -1,8 +1,8 @@
 import React from "react";
 import Sidebar from "react-sidebar";
-
+import { useNavigate } from 'react-router-dom';
 const SideBar = ({ isOpenSideBar, isLoggedIn, meetings }) => {
-
+    const navigate = useNavigate();
     return (
         <Sidebar
             sidebar={
@@ -26,7 +26,7 @@ const SideBar = ({ isOpenSideBar, isLoggedIn, meetings }) => {
                                     {meetings.map((item) => {
                                         return (
                                             <li key={item}>
-                                                <button className="flex flex-col w-[95%] h-12 m-2 items-center hover:text-white text-xl justify-center bg-neutral-200 hover:bg-blue-500 rounded-lg">
+                                                <button onClick={() => navigate(`/transcript/${item}`)} className="flex flex-col w-[95%] h-12 m-2 items-center hover:text-white text-xl justify-center bg-neutral-200 hover:bg-blue-500 rounded-lg">
                                                     {item}
                                                 </button>
                                             </li>
