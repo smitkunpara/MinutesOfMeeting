@@ -10,7 +10,7 @@ database = Database()
 def transcribe(video_id):
     result = database.get_transcript(video_id)
     if result:
-        return json.loads(result[1])
+        return json.loads(result[0])
     aai.settings.api_key = settings.ASSEMBLYAI_API_KEY
     config = aai.TranscriptionConfig(
         speaker_labels=True,
@@ -37,8 +37,9 @@ def transcribe(video_id):
 
 def summarize(video_id):
     result = database.get_summary(video_id)
-    if result:
-        return json.loads(result[1])
+    print(result)
+    if result[0]:
+        return json.loads(result[0])
     
     GOOGLE_API_KEY=settings.GOOGLE_API_KEY
     genai.configure(api_key=GOOGLE_API_KEY)
@@ -77,7 +78,7 @@ def summarize(video_id):
     text = "Give the summary/minutes of meeting\n\n"
     result = database.get_transcript(video_id)
     if result:
-        transcript = json.loads(result[1])
+        transcript = json.loads(result[0])
         for utterance in transcript:
             text += utterance["text"] + "\n\n"
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './login.css';
 import OTPInput, { ResendOTP } from "otp-input-react";
 import axios from 'axios';
-
+import { toast,Bounce } from "react-toastify";
 
 
 
@@ -32,6 +32,17 @@ const Login = ({ isOpen, onClose }) => {
         setsigninEmail("");
         setsigninPassword("");
         onClose();
+        toast.success('Successfully Logedin !!', {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+            });
     }
     const signingUP = async () => {
         console.log(signupEmail, signupPassword);

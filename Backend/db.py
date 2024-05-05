@@ -70,9 +70,9 @@ class Database:
         cursor.close()
         return result is not None
     
-    def insert_transcript(self,transcript):
+    def insert_transcript(self,meeting_id,transcript):
         cursor = self.connection.cursor()
-        cursor.execute("INSERT INTO minutesOfMeetings (transcript) VALUES (%s)", (json.dumps(transcript),))
+        cursor.execute("INSERT INTO minutesOfMeetings (meeting_id,transcript) VALUES (%s,%s)", (meeting_id,transcript))
         self.connection.commit()
         cursor.close()
 
@@ -83,15 +83,15 @@ class Database:
         cursor.close()
         return result
 
-    def insert_summary(self,summary):   
+    def insert_summary(self,meeting_id,summary):   
         cursor = self.connection.cursor() 
-        cursor.execute("INSERT INTO minutesOfMeetings (summary) VALUES (%s)", (json.dumps(summary),))
+        cursor.execute("UPDATE minutesOfMeetings set summary = (%s) WHERE meeting_id = (%s)", (summary,meeting_id))
         self.connection.commit()
         cursor.close()
 
     def get_summary(self,meeting_id):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT summary FROM Summary WHERE meeting_id = %s", (meeting_id,))
+        cursor.execute("SELECT summary FROM minutesOfMeetings WHERE meeting_id = %s", (meeting_id,))
         result = cursor.fetchone()
         cursor.close()
         return result
