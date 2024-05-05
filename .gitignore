@@ -3,3 +3,4 @@ venv
 Backend/files
 Backend/.env
 .env
+.DS_Store
