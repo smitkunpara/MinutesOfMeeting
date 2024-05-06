@@ -3,8 +3,10 @@ import "./transcript.css";
 import Table from './table';
 import Navbar from './navbar';
 import Navbar1 from './navbar1';
-import { useState } from 'react';
+import { useState ,useEffect} from 'react';
 import { useParams } from 'react-router-dom';
+
+
 
 function Transcript() {
   const { ResponseID } = useParams();
@@ -15,6 +17,8 @@ function Transcript() {
   const handleTimeUpdate = (time) => {
     setCurrentTime(time);
   };
+
+
   return (
     <>
         {/* <Navbar  setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh} /> */}

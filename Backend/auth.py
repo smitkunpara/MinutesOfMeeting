@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from db import Database
+from db import database
 from schemas import User
 from config import settings
 # import aioredis
@@ -17,7 +17,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.JWT_EXPIRES_MINUTES
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-database = Database()
+# database = Database()
 
 user_otp = {}
 def create_access_token(data: dict):
@@ -79,10 +79,11 @@ def verify_otp(email: str, otp: str):
     return {"message": "User verified successfully", "token": create_access_token(data={"sub": email}) }
 
 def verify_access_token(token):
+    # print("verify_access_token",token)
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        if database.is_token_blacklisted(token):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token blacklisted")
+        # if database.is_token_blacklisted(token):
+        #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token blacklisted")
         if payload is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
         return payload
@@ -91,6 +92,7 @@ def verify_access_token(token):
 
 def get_current_user_email(token: str = Depends(oauth2_scheme)):
     token_data = verify_access_token(token)
+    # print("get_current_user_email",token_data)
     return token_data['sub']
 
 def remove_access_token(token: str = Depends(oauth2_scheme)):

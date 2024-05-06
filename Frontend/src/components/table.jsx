@@ -5,9 +5,12 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import "./table.css";
 import Markdown from 'react-markdown';
+import { useNavigate } from 'react-router-dom';
+import { ErrorNotification } from './notification';
 
 
 const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: FollowHighlight, setAudioTime }) => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [SummaryLoading, setSummaryLoading] = useState(true);
   const [summaryData, setSummaryData] = useState('');
@@ -15,76 +18,89 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
   const [Transcript, setTranscript] = useState([]);
   const previousWordRef = useRef(null);
   useEffect(() => {
-    toast.promise(
-      new Promise((resolve, reject) => {
-        (async () => {
-          try {
-            setLoadingTranscript(true);
-            setSummaryLoading(true);
-            console.log("fetching transcript");
-            const response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`,
-              {
-                headers: {
-                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                }
-              }
-            );
-            console.log("got it");
-            resolve(response.data);
-            localStorage.setItem('JSON_DATA', JSON.stringify(response.data));
-            setTranscript(response.data);
-            setLoadingTranscript(false);
-          } catch (error) {
-            reject();
-            console.log(error);
-            setLoadingTranscript(false);
-          }
-        })();
-      }),
-      {
-        pending: "Generating transcript...",
-        success: 'Transcript generated successfully!',
-        error: 'Transcript generation failed',
-      },
-      {
-        position: "top-center",
-        autoClose: 2000,
-      }
-    ).then(() => {
+    if (!localStorage.getItem('token')) {
+      ErrorNotification('Please login First!');
+      navigate('/');
+    }
+    else {
       toast.promise(
         new Promise((resolve, reject) => {
           (async () => {
             try {
-              const response = await axios.get(`http://127.0.0.1:8000/summary/${ResponseID}`,
-              {
-                headers: {
-                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              setLoadingTranscript(true);
+              setSummaryLoading(true);
+              console.log("fetching transcript");
+              const response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`,
+                {
+                  headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                  }
                 }
-              }
-            );
-              resolve(response.data);
-              setSummaryData(response.data);
-              setSummaryLoading(false);
+              );
+              console.log("got it");
+              resolve(response.data['dependency']);
+              localStorage.setItem('JSON_DATA', JSON.stringify(response.data['dependency']));
+              setTranscript(response.data['dependency']);
+              setLoadingTranscript(false);
             } catch (error) {
               reject();
+              localStorage.removeItem('token');
+              localStorage.removeItem('JSON_DATA');
+              localStorage.removeItem('email');
+              navigate('/');
               console.log(error);
-              setSummaryLoading(false);
+              setLoadingTranscript(false);
             }
           })();
         }),
         {
-          pending: "Generating summary...",
-          success: 'Summary generated successfully!',
-          error: 'Summary generation failed',
+          pending: "Generating transcript...",
+          success: 'Transcript generated successfully!',
+          error: 'Transcript generation failed',
         },
         {
           position: "top-center",
           autoClose: 2000,
         }
-      );
-    });
-  }
-    , [ResponseID])
+      ).then(() => {
+        toast.promise(
+          new Promise((resolve, reject) => {
+            (async () => {
+              try {
+                const response = await axios.get(`http://127.0.0.1:8000/summary/${ResponseID}`,
+                  {
+                    headers: {
+                      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                    }
+                  }
+                );
+                resolve(response.data['dependency']);
+                setSummaryData(response.data['dependency']);
+                setSummaryLoading(false);
+              } catch (error) {
+                reject();
+                localStorage.removeItem('token');
+                // localStorage.removeItem('JSON_DATA');
+                localStorage.removeItem('email');
+                navigate('/');
+                console.log(error);
+                setSummaryLoading(false);
+              }
+            })();
+          }),
+          {
+            pending: "Generating summary...",
+            success: 'Summary generated successfully!',
+            error: 'Summary generation failed',
+          },
+          {
+            position: "top-center",
+            autoClose: 2000,
+          }
+        );
+      });
+    }
+  }, [ResponseID])
 
 
   const filteredData = useMemo(() => {

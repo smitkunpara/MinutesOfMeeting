@@ -8,6 +8,7 @@ import SideBar from './sidebar';
 import axios from 'axios';
 import { WarningNotification, ErrorNotification, SuccessNotification } from './notification';
 import Switch from '@mui/material/Switch';
+import {Link} from 'react-router-dom';
 
 
 const downloadFile = function (data, fileType, fileName = '') {
@@ -102,6 +103,7 @@ const Navbar1 = ({ onPage, setNormalHighlight, setFollowHighligh }) => {
         localStorage.removeItem('token');
         localStorage.removeItem('email');
         localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('JSON_DATA');
         setIsLoggedIn(false);
         try {
             const response = await axios.get('http://127.0.0.1:8000/logout', {
@@ -148,10 +150,10 @@ const Navbar1 = ({ onPage, setNormalHighlight, setFollowHighligh }) => {
                                 <path d="M160-240q-17 0-28.5-11.5T120-280q0-17 11.5-28.5T160-320h640q17 0 28.5 11.5T840-280q0 17-11.5 28.5T800-240H160Zm0-200q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520h640q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440H160Zm0-200q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h640q17 0 28.5 11.5T840-680q0 17-11.5 28.5T800-640H160Z" />
                             </svg>
                         </button>
-                        <a onClick={() => scrollToSection('s1')} className="cursor-pointer navbar-logo flex items-center font-medium ">
+                        <Link to='/' className="cursor-pointer navbar-logo flex items-center font-medium ">
                             <img className="logo" src={Logo} alt="Logo" />
                             <span className="logo-text mr-6 text-4xl font-bold">MOM.AI</span>
-                        </a>
+                        </Link>
                         {onPage == "home" ?
                             <div className="lg:flex md:flex hidden">
                                 <a onClick={() => scrollToSection('s2')}

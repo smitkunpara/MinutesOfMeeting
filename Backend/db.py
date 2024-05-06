@@ -2,7 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 from schemas import User
 from config import settings
-import json
+from fastapi import HTTPException, Depends,status
 
 class Database:
     def __init__(self):
@@ -54,7 +54,10 @@ class Database:
         self.connection.commit()
         cursor.close()
 
-    def get_meetings(self,email):
+    def get_meetings(self,email,token):
+        # print("get_meetings",email,token)
+        if self.is_token_blacklisted(token):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token blacklisted")
         cursor = self.connection.cursor()
         query = "SELECT meeting_id FROM meetings WHERE email = %s"
         cursor.execute(query, (email,))
@@ -71,18 +74,28 @@ class Database:
 
     def add_blacklisted_token(self, token):
         cursor = self.connection.cursor()
+        if self.is_token_blacklisted(token):
+            print("Token already blacklisted")
+            return
         query = "INSERT INTO blacklistedtokens (token) VALUES (%s)"
         cursor.execute(query, (token,))
         self.connection.commit()
         cursor.close()
 
     def is_token_blacklisted(self, token):
-        cursor = self.connection.cursor()
-        query = "SELECT * FROM blacklistedtokens WHERE token = %s"
-        cursor.execute(query, (token,))
-        result = cursor.fetchone()
-        cursor.close()
-        return result is not None
+        # print("is_token",token)
+        # cursor = self.connection.cursor()
+        # query = "SELECT * FROM blacklistedtokens WHERE token = %s"
+        # cursor.execute(query, (token,))
+        # result = cursor.fetchone()
+        # cursor.close()
+        # return result is not None
+        with self.connection.cursor() as cursor:
+            query = "SELECT * FROM blacklistedtokens WHERE token = %s"
+            cursor.execute(query, (token,))
+            result = cursor.fetchone()
+            return result is not None
+        
     
     def insert_transcript(self,meeting_id,transcript):
         cursor = self.connection.cursor()
@@ -120,7 +133,7 @@ class Database:
         cursor.close()
         
 
-
+database = Database()
 
 
 # import mysql.connector

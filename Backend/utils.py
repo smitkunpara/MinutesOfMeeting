@@ -1,13 +1,18 @@
-from db import Database
+from db import database
 import json
 import assemblyai as aai
 from config import settings
 from fastapi import HTTPException,status
 import google.generativeai as genai
 
-database = Database()
+# database = Database()
 
-def transcribe(video_id):
+def transcribe(video_id,email,token):
+    print(token)
+    if database.is_token_blacklisted(token):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token blacklisted")
+    if database.verify_meeting_id(video_id,email) == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
     result = database.get_transcript(video_id)
     if result:
         return json.loads(result[0])
@@ -35,9 +40,12 @@ def transcribe(video_id):
         database.insert_transcript(video_id, dumpVal)
         return dump_transcript
 
-def summarize(video_id):
+def summarize(video_id,email,token):
+    if database.is_token_blacklisted(token):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token blacklisted")
+    if database.verify_meeting_id(video_id,email) == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
     result = database.get_summary(video_id)
-    print(result)
     if result[0]:
         return json.loads(result[0])
     
