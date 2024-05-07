@@ -1,177 +1,67 @@
-import mysql.connector
-from mysql.connector import Error
-from schemas import User
+import pymongo
 from config import settings
-from fastapi import HTTPException, Depends,status
+from fastapi import HTTPException,status
 
-class Database:
-    def __init__(self):
+class DataBase:
+    def __init__(self) -> None:
         try:
-            self.connection = mysql.connector.connect(
-                host=settings.MYSQL_HOST,  
-                port=settings.MYSQL_PORT,
-                user=settings.MYSQL_USERNAME,
-                password=settings.MYSQL_PASSWORD,
-                database=settings.MYSQL_DATABASE
-            )
-            if self.connection.is_connected():
-                print('Connected to MySQL database')
-        except Error as e:
-            print(f"Error while connecting to MySQL: {e}")
-
+            self.client = pymongo.MongoClient(settings.DATABASE_URL)
+            self.db = self.client[settings.MONGODB_NAME]
+            print("Connected to MongoDB")
+        except Exception as e:
+            print(f"Error while connecting to MongoDB: {e}")
+        
     def close_connection(self):
-        if self.connection.is_connected():
-            self.connection.close()
-            print('MySQL connection closed')
+        self.client.close()
+        print("MongoDB connection closed")
     
     def get_user(self, username):
-        cursor = self.connection.cursor(dictionary=True)
-        query = "SELECT * FROM users WHERE email = %s"
-        cursor.execute(query, (username,))
-        user = cursor.fetchone()
-        cursor.close()
-        return user
+        return self.db.users.find_one({"email": username})
     
     def update_user_verification_status(self, username, is_verified):
-        cursor = self.connection.cursor()
-        query = "UPDATE users SET is_verified = %s WHERE email = %s"
-        cursor.execute(query, (is_verified, username))
-        self.connection.commit()
-        cursor.close()
-    
+        self.db.users.update_one({"email": username}, {"$set": {"is_verified": is_verified}})
+        
     def verify_meeting_id(self,meeting_id,email):
-        cursor = self.connection.cursor()
-        query = "SELECT * FROM meetings WHERE meeting_id = %s AND email = %s"
-        cursor.execute(query, (meeting_id,email))
-        result = cursor.fetchone()
-        cursor.close()
-        return result is not None
+        return self.db.meetings.find_one({"meeting_id": meeting_id, "email": email}) is not None
     
     def add_meeting_id(self,meeting_id,email):
-        cursor = self.connection.cursor()
-        query = "INSERT INTO meetings (meeting_id, email,is_shared) VALUES (%s, %s, %s)"
-        cursor.execute(query, (meeting_id,email,False))
-        self.connection.commit()
-        cursor.close()
-
-    def get_meetings(self,email,token):
-        # print("get_meetings",email,token)
+        self.db.meetings.insert_one({"meeting_id": meeting_id, "email": email,"is_shared": False})
+        
+    def get_meetings(self,email,):
+        result = self.db.meetings.find({"email": email}, {"_id": 0, "meeting_id": 1})
+        meeting_ids = [doc["meeting_id"] for doc in result]
+        return list(meeting_ids)
+    
+    def update_meeting_share_status(self,meeting_id):
+        self.db.meetings.update_one({"meeting_id": meeting_id}, {"$set": {"is_shared": True}})
+        
+    def is_meeting_shared(self,meeting_id):
+        return self.db.meetings.find_one({"meeting_id": meeting_id})["is_shared"]
+    
+    def add_user(self, username, password,is_verified=False):
+        self.db.users.insert_one({"email": username, "password_hash": password, "is_verified": is_verified})
+        
+    def add_blacklisted_token(self, token):
         if self.is_token_blacklisted(token):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token blacklisted")
-        cursor = self.connection.cursor()
-        query = "SELECT meeting_id FROM meetings WHERE email = %s"
-        cursor.execute(query, (email,))
-        result = cursor.fetchall()
-        cursor.close()
-        return result
-
-    def add_user(self, username, password,is_verified=True):
-        cursor = self.connection.cursor()
-        query = "INSERT INTO users (email, password_hash,is_verified) VALUES (%s, %s, %s)"
-        cursor.execute(query, (username, password,is_verified))
-        self.connection.commit()
-        cursor.close()
-
-    def add_blacklisted_token(self, token):
-        cursor = self.connection.cursor()
-        if self.is_token_blacklisted(token):
-            print("Token already blacklisted")
-            return
-        query = "INSERT INTO blacklistedtokens (token) VALUES (%s)"
-        cursor.execute(query, (token,))
-        self.connection.commit()
-        cursor.close()
-
-    def is_token_blacklisted(self, token):
-        # print("is_token",token)
-        # cursor = self.connection.cursor()
-        # query = "SELECT * FROM blacklistedtokens WHERE token = %s"
-        # cursor.execute(query, (token,))
-        # result = cursor.fetchone()
-        # cursor.close()
-        # return result is not None
-        with self.connection.cursor() as cursor:
-            query = "SELECT * FROM blacklistedtokens WHERE token = %s"
-            cursor.execute(query, (token,))
-            result = cursor.fetchone()
-            return result is not None
+        self.db.blacklistedtokens.insert_one({"token": token})
+        return {"message": "Logged out successfully"}
         
+    def is_token_blacklisted(self, token):
+        return self.db.blacklistedtokens.find_one({"token": token}) is not None
     
     def insert_transcript(self,meeting_id,transcript):
-        cursor = self.connection.cursor()
-        cursor.execute("INSERT INTO minutesOfMeetings (meeting_id,transcript) VALUES (%s,%s)", (meeting_id,transcript))
-        self.connection.commit()
-        cursor.close()
-
+        self.db.minutesOfMeetings.insert_one({"meeting_id": meeting_id, "transcript": transcript,"summary": ""})
+        
     def get_transcript(self,meeting_id):
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT transcript FROM minutesOfMeetings WHERE meeting_id = %s", (meeting_id,))
-        result = cursor.fetchone()
-        cursor.close()
-        return result
-
-    def insert_summary(self,meeting_id,summary):   
-        cursor = self.connection.cursor() 
-        cursor.execute("UPDATE minutesOfMeetings set summary = (%s) WHERE meeting_id = (%s)", (summary,meeting_id))
-        self.connection.commit()
-        cursor.close()
-
-    def get_summary(self,meeting_id):
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT summary FROM minutesOfMeetings WHERE meeting_id = %s", (meeting_id,))
-        result = cursor.fetchone()
-        cursor.close()
+        result = self.db.minutesOfMeetings.find_one({"meeting_id": meeting_id})
         return result
     
-    def remove_user(self,username):
-        #delete user also from meetings and minutesOfMeetings
-        cursor = self.connection.cursor()
-        cursor.execute("DELETE FROM users WHERE email = %s", (username,))
-        cursor.execute("DELETE FROM meetings WHERE email = %s", (username,))
-        cursor.execute("DELETE FROM minutesOfMeetings WHERE email = %s", (username,))
-        self.connection.commit()
-        cursor.close()
-        
+    def insert_summary(self,meeting_id,summary):
+        self.db.minutesOfMeetings.update_one({"meeting_id": meeting_id}, {"$set": {"summary": summary}})
+    
+    def get_summary(self,meeting_id):
+        result = self.db.minutesOfMeetings.find_one({"meeting_id": meeting_id})
+        return result
 
-database = Database()
-
-
-# import mysql.connector
-# from config import settings
-# import json
-
-# cnx = mysql.connector.connect(
-#     host=settings.MYSQL_HOST,  
-#     port=settings.MYSQL_PORT,
-#     user=settings.MYSQL_USERNAME,
-#     password=settings.MYSQL_PASSWORD,
-#     database=settings.MYSQL_DATABASE
-# )
-
-# # Create a cursor object
-# cursor = cnx.cursor()
-
-
-
-
-
-
-
-# def insert_transcript(transcript):
-#     cursor.execute("INSERT INTO Transcript (transcript) VALUES (%s)", (json.dumps(transcript),))
-#     cnx.commit()
-
-
-# def get_transcript(transcript_id):
-#     cursor.execute("SELECT * FROM Transcript WHERE id = %s", (transcript_id,))
-#     result = cursor.fetchone()
-#     return result
-
-# def insert_summary(summary):    
-#     cursor.execute("INSERT INTO Summary (summary) VALUES (%s)", (json.dumps(summary),))
-#     cnx.commit()
-
-# def get_summary(summary_id):
-#     cursor.execute("SELECT * FROM Summary WHERE id = %s", (summary_id,))
-#     result = cursor.fetchone()
-#     return result
+database=DataBase()

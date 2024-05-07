@@ -17,7 +17,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.JWT_EXPIRES_MINUTES
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-# database = Database()
 
 user_otp = {}
 def create_access_token(data: dict):
@@ -79,11 +78,10 @@ def verify_otp(email: str, otp: str):
     return {"message": "User verified successfully", "token": create_access_token(data={"sub": email}) }
 
 def verify_access_token(token):
-    # print("verify_access_token",token)
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        # if database.is_token_blacklisted(token):
-        #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token blacklisted")
+        if database.is_token_blacklisted(token):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token blacklisted")
         if payload is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
         return payload
@@ -92,7 +90,6 @@ def verify_access_token(token):
 
 def get_current_user_email(token: str = Depends(oauth2_scheme)):
     token_data = verify_access_token(token)
-    # print("get_current_user_email",token_data)
     return token_data['sub']
 
 def remove_access_token(token: str = Depends(oauth2_scheme)):
@@ -100,15 +97,15 @@ def remove_access_token(token: str = Depends(oauth2_scheme)):
     return {"message": "User logged out successfully"}
 
 def send_otp_on_email(email: str, otp: int):
-    server = smtplib.SMTP('smtp.gmail.com', '587')
-    server.starttls()
-    server.login(settings.EMAIL, settings.EMAIL_PASSWORD)
     msg = EmailMessage()
     msg['Subject'] = "OTP verification"
     msg['To'] = email
     http_message = f"Your OTP is {otp}"
     msg.set_content(http_message)
     try:
+        server = smtplib.SMTP('smtp.gmail.com', '587')
+        server.starttls()
+        server.login(settings.EMAIL, settings.EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
         return {"message": "OTP sent successfully"}

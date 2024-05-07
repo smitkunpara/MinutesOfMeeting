@@ -11,10 +11,8 @@ from auth import verify_user,get_current_user_email,remove_access_token,create_u
 from schemas import OTPVerify
 from utils import summarize,transcribe
 from db import database
-from fastapi.security import OAuth2PasswordBearer
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-# database = Database()
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -50,24 +48,27 @@ async def logout(message:str = Depends(remove_access_token)):
     return message
 
 @app.get("/get_meetings")
-async def get_meetings(token: str = Depends(oauth2_scheme),email: str = Depends(get_current_user_email)):
-    return database.get_meetings(email,token)
+async def get_meetings(email: str = Depends(get_current_user_email)):
+    return database.get_meetings(email)
     
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
 @app.get("/transcript/{meeting_id}")
-def getTranscript(meeting_id: str, email: str = Depends(get_current_user_email),token: str = Depends(oauth2_scheme)):
-    # if database.verify_meeting_id(meeting_id,email) == None:
-    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
-    return Depends(transcribe(meeting_id,email,token))
+def getTranscript(meeting_id: str, email: str = Depends(get_current_user_email)):
+    if database.verify_meeting_id(meeting_id,email) == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
+    print("\n\n\n\n\n\n\n")
+    result=transcribe(meeting_id)
+    print(result)
+    return result
 
 @app.get("/summary/{meeting_id}")
-def getSummary(meeting_id:str,email: str = Depends(get_current_user_email),token: str = Depends(oauth2_scheme)):
-    # if database.verify_meeting_id(meeting_id,email) == None:
-    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
-    return Depends(summarize(meeting_id,email,token))
+def getSummary(meeting_id:str,email: str = Depends(get_current_user_email)):
+    if database.verify_meeting_id(meeting_id,email) == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
+    return summarize(meeting_id)
 
 @app.get("/audio/{video_id}")
 async def read_item(request: Request, video_id: str):

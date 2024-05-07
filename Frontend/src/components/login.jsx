@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './login.css';
 import OTPInput, { ResendOTP } from "otp-input-react";
 import axios from 'axios';

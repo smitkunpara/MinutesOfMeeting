@@ -1,5 +1,4 @@
 .highlight {
-    /* set the background colour of font to yellow; */
     background-color: yellow;
 }
 
@@ -21,25 +20,13 @@
     }
 }
 
-/* 
-body {
-    min-height: 100vh;
-    background-color: #d9e8ff;
-    background: url() center / cover;
-    background: url("https://imgproxy.gamma.app/resize/quality:80/resizing_type:fit/width:2400/https://cdn.gamma.app/theme_images/prism-background.2232a16e.png?w=3707&q=70") center / cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-} */
 
 
 main.table {
     width: 100%;
-    /* height: 95vh;  */
     background-color: #fff5;
     backdrop-filter: blur(7px);
     border-radius: .8rem;
-    /* margin-top: 11vh; */
     margin-bottom: 7vh;
     overflow: hidden;
 }
@@ -48,15 +35,12 @@ main.table {
     width: 100%;
     height: 10%;
     background-color: rgba(255, 255, 255, 0.5);
-    /* Change this line */
     backdrop-filter: blur(10px);
-    /* Add this line */
     padding: .8rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    /* Add this line */
 }
 
 .table__header .input-group {
@@ -75,15 +59,12 @@ main.table {
 .table__header .input-group:hover {
     width: 45%;
     background-color: #d9e8ff;
-    /* background-color: rgba(208, 198, 198, 0.533); */
     box-shadow: 0 .1rem .4rem #0002;
 }
 
 .table__header .input-group img {
     width: 2.4rem;
-    /* mix-blend-mode: multiply; */
     height: 2.4rem;
-    /* position: absolute; */
 }
 
 .table__header .input-group input {
@@ -97,12 +78,9 @@ main.table {
 .table__body {
     width: 98%;
     height: 50%;
-    /* max-height: calc(89% - 1.6rem); */
-    /* background-color: transparent; */
     background-color: #fffb;
     margin: .8rem auto;
     border-radius: .6rem;
-    /* overflow: hidden; */
     overflow: overlay;
 }
 
@@ -164,9 +142,7 @@ tbody tr:nth-child(even) {
 tbody tr {
     --delay: .1s;
     transition: .5s ease-in-out var(--delay), background-color 0s;
-    /* backdrop-filter: blur(5px); */
     background-color: rgba(255, 255, 255, 0.3);
-    /* Change this line */
 }
 
 tbody tr.hide {

@@ -2,8 +2,7 @@ import AudioPlayer from './AudioPlayer';
 import "./transcript.css";
 import Table from './table';
 import Navbar from './navbar';
-import Navbar1 from './navbar1';
-import { useState ,useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 
@@ -21,15 +20,11 @@ function Transcript() {
 
   return (
     <>
-        {/* <Navbar  setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh} /> */}
-        <Navbar1 onPage='Transcript' setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh}/>
-        <div className='px-4 bg-[#f6f3f3]'>
+      <Navbar onPage='Transcript' setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh} />
+      <div className='px-4 bg-[#f6f3f3]'>
         <div className='p-4 bg-white rounded-2xl'>
-          {/* <div className='p-4'> */}
           <AudioPlayer onTimeUpdate={handleTimeUpdate} AudioTime={AudioTime} ResponseID={ResponseID} />
           <Table setAudioTime={setAudioTime} ResponseID={ResponseID} currentTime={currentTime} NormalHighlight={NormalHighlight} FollowHighligh={FollowHighligh} />
-
-          {/* </div> */}
         </div>
       </div>
     </>

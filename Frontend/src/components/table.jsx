@@ -23,6 +23,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
       navigate('/');
     }
     else {
+      let response;
       toast.promise(
         new Promise((resolve, reject) => {
           (async () => {
@@ -30,33 +31,41 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
               setLoadingTranscript(true);
               setSummaryLoading(true);
               console.log("fetching transcript");
-              const response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`,
+              response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`,
                 {
                   headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token'),
                   }
                 }
               );
-              console.log("got it");
-              resolve(response.data['dependency']);
-              localStorage.setItem('JSON_DATA', JSON.stringify(response.data['dependency']));
-              setTranscript(response.data['dependency']);
+              resolve(response.data);
+              localStorage.setItem('JSON_DATA', JSON.stringify(response.data));
+              setTranscript(response.data);
               setLoadingTranscript(false);
             } catch (error) {
-              reject();
+              console.log(error.response.status);
+              if (error.response && (error.response.status === 404 || error.response.status === 40)) {
+                reject(error.response.data["detail"]);
+              }
+              else{
+              reject(error.response.data["detail"]);
               localStorage.removeItem('token');
               localStorage.removeItem('JSON_DATA');
-              localStorage.removeItem('email');
+              localStorage.removeItem('email');}
               navigate('/');
               console.log(error);
-              setLoadingTranscript(false);
             }
           })();
         }),
         {
           pending: "Generating transcript...",
           success: 'Transcript generated successfully!',
-          error: 'Transcript generation failed',
+          error: {
+            render({data}){
+              return data
+            },
+            
+          },
         },
         {
           position: "top-center",
@@ -74,8 +83,8 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
                     }
                   }
                 );
-                resolve(response.data['dependency']);
-                setSummaryData(response.data['dependency']);
+                resolve(response.data);
+                setSummaryData(response.data);
                 setSummaryLoading(false);
               } catch (error) {
                 reject();
@@ -104,6 +113,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
 
 
   const filteredData = useMemo(() => {
+    console.log("tdnsbfkjdsabg",Transcript)
     const searchLower = search.toLowerCase();
     return Transcript.filter(item =>
       item.words.some(word => word.text.toLowerCase().includes(searchLower))
