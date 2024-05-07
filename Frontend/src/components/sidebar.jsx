@@ -47,7 +47,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme, expanded }) => ({
 
 
 
-const SideBar = ({onPage,ExportasExcel,ExportasJSON ,isOpenSideBar, isLoggedIn, meetings, handleNormalHighlight, Normal, Follow, handleFollowHighlight }) => {
+const SideBar = ({onPage,ExportasExcel,ExportasJSON ,setIsOpenSideBar,isOpenSideBar, isLoggedIn, meetings, handleNormalHighlight, Normal, Follow, handleFollowHighlight }) => {
     const navigate = useNavigate();
     const [expanded, setExpanded] = React.useState('panel3');
 
@@ -181,6 +181,9 @@ const SideBar = ({onPage,ExportasExcel,ExportasJSON ,isOpenSideBar, isLoggedIn, 
                 </>
             }
             open={isOpenSideBar}
+            onSetOpen={setIsOpenSideBar}
+            // pullRight={true}
+            touch={true}
             styles={{
 
                 sidebar: {
