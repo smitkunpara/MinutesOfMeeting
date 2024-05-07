@@ -100,15 +100,16 @@ def remove_access_token(token: str = Depends(oauth2_scheme)):
     return {"message": "User logged out successfully"}
 
 def send_otp_on_email(email: str, otp: int):
-    server = smtplib.SMTP('smtp.gmail.com', '587')
-    server.starttls()
-    server.login(settings.EMAIL, settings.EMAIL_PASSWORD)
+    
     msg = EmailMessage()
     msg['Subject'] = "OTP verification"
     msg['To'] = email
     http_message = f"Your OTP is {otp}"
     msg.set_content(http_message)
     try:
+        server = smtplib.SMTP('smtp.gmail.com', '587')
+        server.starttls()
+        server.login(settings.EMAIL, settings.EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
         return {"message": "OTP sent successfully"}

@@ -1,20 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
-/* .shake {
-    animation: shake 0.62s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-  }
-  .shaking {
-	position: fixed;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	background-color: rgba(0 0 0 / 75%);
-	opacity: .5;
-  } */
+
 .login-container {
 	position: fixed;
 
@@ -220,17 +206,7 @@
 		max-width: 400px;
 	}
 
-	
-	
-	
 
-	/* .sign-in-container, .sign-up-container {
-		width: 100%;
-	}
-	
-	.overlay-container {
-		display: none;
-	} */
 	
 }
 

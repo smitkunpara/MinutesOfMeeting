@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import UploadBox from './uploadbox';
 import axios from 'axios';
 import { WarningNotification } from './notification';
-import Navbar1 from './navbar1';
+import Navbar from './navbar';
 
 const Home = () => {
   let isLoggedIn = localStorage.getItem('isLoggedIn');
@@ -24,7 +24,7 @@ const Home = () => {
   return (
 
     <div className="body scroll-smooth">
-      <Navbar1 isLoggedInHome={isLoggedIn} onPage="home" />
+      <Navbar isLoggedInHome={isLoggedIn} onPage="home" />
       <UploadBox isOpen={isOpenUpload} onClose={() => setIsOpenUpload(false)} />
       <div className='p-4'>
         <section id='s1' className="text-gray-600 body-font lg:p-16 rounded-lg">
@@ -55,7 +55,7 @@ const Home = () => {
             <div className="flex flex-col text-center w-full mb-16" bis_skin_checked="1">
               <h1 className="text-gray-900 text-4xl title-font font-medium mb-4">How to transcribe audio to text:</h1>
             </div>
-            <div className="lg:flex flex-wrap -m-4" bis_skin_checked="1">
+            <div className="lg:flex md:flex flex-wrap justify-center -m-4" bis_skin_checked="1">
               <div className="p-4 lg:w-1/3 md:w-1/2 transform scale-100 transition-transform duration-300 ease-in-out hover:scale-110" bis_skin_checked="1">
                 <div className="h-full flex flex-col items-center text-center" bis_skin_checked="1">
                   <img alt="team" className="flex-shrink-0 rounded-lg w-full h-56 object-cover object-center mb-4 " src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=640,quality=75,format=auto/Upload_or_record_d9784e01b0/Upload_or_record_d9784e01b0.png" />
