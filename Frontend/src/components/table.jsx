@@ -17,13 +17,9 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
   const [LoadingTranscript, setLoadingTranscript] = useState(true);
   const [Transcript, setTranscript] = useState([]);
   const previousWordRef = useRef(null);
-  useEffect(() => {
-    if (!localStorage.getItem('token')) {
-      ErrorNotification('Please login First!');
-      navigate('/');
-    }
-    else {
-      let response;
+  let is_shared = false;
+  useEffect( () =>  {
+
       toast.promise(
         new Promise((resolve, reject) => {
           (async () => {
@@ -31,7 +27,23 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
               setLoadingTranscript(true);
               setSummaryLoading(true);
               console.log("fetching transcript");
-              response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`,
+              const response1 = await axios.get(`http://127.0.0.1:8000/isshared/${ResponseID}`);
+              if (response1.data["is_shared"] === true) {
+                is_shared = true;
+                setTranscript(response1.data["transcript"]);
+                setSummaryData(response1.data["summary"]);
+                resolve()
+                setLoadingTranscript(false);
+                setSummaryLoading(false);
+                return;
+              }
+              if (!localStorage.getItem('token')) {
+                ErrorNotification('Please login First!');
+                reject("Unauthorized Access!")
+                navigate('/');
+                return;
+              }
+                const response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`,
                 {
                   headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -42,6 +54,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
               localStorage.setItem('JSON_DATA', JSON.stringify(response.data));
               setTranscript(response.data);
               setLoadingTranscript(false);
+            
             } catch (error) {
               console.log(error.response.status);
               if (error.response && (error.response.status === 404 || error.response.status === 40)) {
@@ -72,6 +85,9 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
           autoClose: 2000,
         }
       ).then(() => {
+        if (is_shared) {
+          return;
+        }
         toast.promise(
           new Promise((resolve, reject) => {
             (async () => {
@@ -109,7 +125,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
         );
       });
     }
-  }, [ResponseID])
+  , [ResponseID])
 
 
   const filteredData = useMemo(() => {

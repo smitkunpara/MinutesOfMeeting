@@ -9,6 +9,7 @@ from pydub import AudioSegment
 from schemas import User
 from auth import verify_user,get_current_user_email,remove_access_token,create_user,verify_otp
 from schemas import OTPVerify
+import json
 from utils import summarize,transcribe
 from db import database
 
@@ -47,6 +48,8 @@ async def verify(otpVerify: OTPVerify):
 async def logout(message:str = Depends(remove_access_token)):
     return message
 
+
+
 @app.get("/get_meetings")
 async def get_meetings(email: str = Depends(get_current_user_email)):
     return database.get_meetings(email)
@@ -55,14 +58,18 @@ async def get_meetings(email: str = Depends(get_current_user_email)):
 def read_root():
     return {"Hello": "World"}
 
+@app.get("/isshared/{meeting_id}")
+async def is_shared(meeting_id:str): 
+    is_shared = database.is_meeting_shared(meeting_id)
+    if is_shared == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found")
+    return {"transcript" : json.loads(database.get_transcript(meeting_id)["transcript"]),"summary":json.loads(database.get_summary(meeting_id)["summary"]),"is_shared":is_shared}
+
 @app.get("/transcript/{meeting_id}")
-def getTranscript(meeting_id: str, email: str = Depends(get_current_user_email)):
+def getTranscript(meeting_id: str,email: str = Depends(get_current_user_email)):
     if database.verify_meeting_id(meeting_id,email) == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
-    print("\n\n\n\n\n\n\n")
-    result=transcribe(meeting_id)
-    print(result)
-    return result
+    return transcribe(meeting_id)
 
 @app.get("/summary/{meeting_id}")
 def getSummary(meeting_id:str,email: str = Depends(get_current_user_email)):
@@ -98,6 +105,17 @@ async def create_upload_file(file: UploadFile = UploadFile(...) ,email: str = De
     os.remove(f"files/videos/{meeting_id}")
     database.add_meeting_id(meeting_id=meeting_id,email=email)
     return {"video_id": meeting_id}
+
+
+@app.post("/share")
+async def share_meeting(meeting_id:str,share:bool,email: str = Depends(get_current_user_email)):
+    if database.verify_meeting_id(meeting_id,email) == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
+    database.update_meeting_share_status(meeting_id,share)
+    return {"message":"Meeting shared successfully"}
+
+
+
 
 
 

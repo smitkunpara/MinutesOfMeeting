@@ -47,7 +47,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme, expanded }) => ({
 
 
 
-const SideBar = ({onPage,ExportasExcel,ExportasJSON ,setIsOpenSideBar,isOpenSideBar, isLoggedIn, meetings, handleNormalHighlight, Normal, Follow, handleFollowHighlight }) => {
+const SideBar = ({isShared,onPage,ExportasExcel,ExportasJSON ,setIsOpenSideBar,isOpenSideBar, isLoggedIn, meetings, handleNormalHighlight, Normal, Follow, handleFollowHighlight }) => {
     const navigate = useNavigate();
     const [expanded, setExpanded] = React.useState('panel3');
 
@@ -151,7 +151,7 @@ const SideBar = ({onPage,ExportasExcel,ExportasJSON ,setIsOpenSideBar,isOpenSide
                                         </AccordionDetails>
                                     </Accordion>
                                         </>):null}
-                                    <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+                                    {isShared && <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
                                         <AccordionSummary aria-controls="panel3d-content" id="panel3d-header" expanded={expanded === 'panel3'}>
                                             <Typography className="w-[90%]">
                                                 <h1 className="w-full text-[1.2rem] text-center">Meetings</h1>
@@ -172,7 +172,7 @@ const SideBar = ({onPage,ExportasExcel,ExportasJSON ,setIsOpenSideBar,isOpenSide
                                                 </ul>
                                             </Typography>
                                         </AccordionDetails>
-                                    </Accordion>
+                                    </Accordion>}
                                 </div>
 
                             </>

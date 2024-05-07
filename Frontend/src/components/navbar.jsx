@@ -59,6 +59,7 @@ const ExportasExcel = () => {
 
 const Navbar1 = ({ onPage, setNormalHighlight, setFollowHighligh }) => {
     const [meetings, setMeetings] = useState([]);
+    let isShared = true;
     let token = localStorage.getItem('token');
     let email = localStorage.getItem('email');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -100,6 +101,9 @@ const Navbar1 = ({ onPage, setNormalHighlight, setFollowHighligh }) => {
                 localStorage.removeItem('isLoggedIn');
                 setIsLoggedIn(false);
             });
+        }
+        else{
+            isShared = true;
         }
     }, [isLoggedIn]);
 
@@ -145,7 +149,7 @@ const Navbar1 = ({ onPage, setNormalHighlight, setFollowHighligh }) => {
     };
 
     return (<>
-        <SideBar ExportasExcel={ExportasExcel} ExportasJSON={ExportasJSON} onPage={onPage} Normal={Normal} Follow={Follow} handleNormalHighlight={handleNormalHighlight} handleFollowHighlight={handleFollowHighlight} isOpenSideBar={isOpenSideBar} setIsOpenSideBar={setIsOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings} />
+        <SideBar isShared={isShared} ExportasExcel={ExportasExcel} ExportasJSON={ExportasJSON} onPage={onPage} Normal={Normal} Follow={Follow} handleNormalHighlight={handleNormalHighlight} handleFollowHighlight={handleFollowHighlight} isOpenSideBar={isOpenSideBar} setIsOpenSideBar={setIsOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings} />
         <header className="sticky top-0 bg-[#f7f7f8] flex w-full text-gray-600 body-font z-[2000]">
             <nav className="navbar px-4 ">
                 <div className='flex w-full justify-between '>

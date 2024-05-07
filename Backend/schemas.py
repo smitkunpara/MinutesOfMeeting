@@ -7,3 +7,7 @@ class User(BaseModel):
 class OTPVerify(BaseModel):
     email: str
     otp: str
+    
+class Meeting(BaseModel):
+    meeting_id: str
+    email: str
