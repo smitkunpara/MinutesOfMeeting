@@ -106,6 +106,9 @@ def send_otp_on_email(email: str, otp: int):
         server = smtplib.SMTP('smtp.gmail.com', '587')
         server.starttls()
         server.login(settings.EMAIL, settings.EMAIL_PASSWORD)
+        server = smtplib.SMTP('smtp.gmail.com', '587')
+        server.starttls()
+        server.login(settings.EMAIL, settings.EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
         return {"message": "OTP sent successfully"}
