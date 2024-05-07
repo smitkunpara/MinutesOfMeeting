@@ -25,12 +25,12 @@ class DataBase:
         return self.db.meetings.find_one({"meeting_id": meeting_id, "email": email}) is not None
     
     def add_meeting_id(self,meeting_id,email):
-        self.db.meetings.insert_one({"meeting_id": meeting_id, "email": email,"is_shared": False})
+        self.db.meetings.insert_one({"meeting_id": meeting_id, "email": email,"is_shared": False,"meeting_name": ""})
         
-    def get_meetings(self,email,):
-        result = self.db.meetings.find({"email": email}, {"_id": 0, "meeting_id": 1})
-        meeting_ids = [doc["meeting_id"] for doc in result]
-        return list(meeting_ids)
+    def get_meetings(self, email):
+        result = self.db.meetings.find({"email": email}, {"_id": 0, "meeting_id": 1, "meeting_name": 1})
+        meetings = [{"meeting_id": doc["meeting_id"], "meeting_name": doc["meeting_name"]} for doc in result]
+        return meetings
     
     def update_meeting_share_status(self,meeting_id,status):
         self.db.meetings.update_one({"meeting_id": meeting_id}, {"$set": {"is_shared": status}})
@@ -66,4 +66,11 @@ class DataBase:
         result = self.db.minutesOfMeetings.find_one({"meeting_id": meeting_id})
         return result
 
+    def set_meeting_name(self,meeting_id,meeting_name):
+        self.db.meetings.update_one({"meeting_id": meeting_id}, {"$set": {"meeting_name": meeting_name}})
+    
+    def get_meeting_name(self,meeting_id):
+        result = self.db.meetings.find_one({"meeting_id": meeting_id})
+        return result["meeting_name"]
+    
 database=DataBase()
