@@ -18,7 +18,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
         console.log(signinEmail, signinPassword);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/signin',
+            const response = await axios.post('http://10.1.162.128:1234/signin',
                 {
                     email: signinEmail,
                     password: signinPassword
@@ -40,7 +40,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
     const signingUP = async () => {
         console.log(signupEmail, signupPassword);
         try {
-            const response = await axios.post('http://127.0.0.1:8000/signup',
+            const response = await axios.post('http://10.1.162.128:1234/signup',
                 {
                     email: signupEmail,
                     password: signupPassword
@@ -80,7 +80,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
     }
     const verifyOTP = async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:8000/verify',
+            const response = await axios.post('http://10.1.162.128:1234/verify',
                 {
                     email: signupEmail,
                     otp: OTP

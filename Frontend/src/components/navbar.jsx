@@ -9,7 +9,7 @@ import axios from 'axios';
 import { WarningNotification, ErrorNotification, SuccessNotification } from './notification';
 import { Link } from 'react-router-dom';
 import { Workbook } from 'exceljs';
-
+import UploadBox from "./uploadbox";
 const ExportasJSON = () => {
     let jsonData = JSON.parse(localStorage.getItem('JSON_DATA'));
     if (jsonData) {
@@ -58,7 +58,7 @@ const ExportasExcel = () => {
 }
 
 const fetchMeetings = (token, setMeetings, setIsLoggedIn) => {
-    axios.get('http://127.0.0.1:8000/get_meetings', {
+    axios.get('http://10.1.162.128:1234/get_meetings', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -103,7 +103,7 @@ const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) 
         console.log(Follow);
     };
     const is_shared = async ()  => {
-        const response1 = await axios.get(`http://127.0.0.1:8000/isshared/${ResponseID}`);
+        const response1 = await axios.get(`http://10.1.162.128:1234/isshared/${ResponseID}`);
         if (response1.data["is_shared"] === true) {
             setIsShared(true);
         }
@@ -127,7 +127,7 @@ const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) 
         localStorage.removeItem('JSON_DATA');
         setIsLoggedIn(false);
         try {
-            const response = await axios.get('http://127.0.0.1:8000/logout', {
+            const response = await axios.get('http://10.1.162.128:1234/logout', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -159,14 +159,24 @@ const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) 
         setIsOpenLogin(!isOpenLogin);
 
     };
+    const [isOpenUpload, setIsOpenUpload] = useState(false);
+  const handleDialogOpenUpload = () => {
+    // isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (!isLoggedIn) {
+        WarningNotification("You need to login to access this feature !!")
+        return;
+    }
+    setIsOpenUpload(true);
+  };  
 
     return (<>
-        <SideBar ResponseID={ResponseID} setIsShared={setIsShared} isShared={isShared} ExportasExcel={ExportasExcel} ExportasJSON={ExportasJSON} onPage={onPage} Normal={Normal} Follow={Follow} handleNormalHighlight={handleNormalHighlight} handleFollowHighlight={handleFollowHighlight} isOpenSideBar={isOpenSideBar} setIsOpenSideBar={setIsOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings} />
+    <UploadBox  isOpen={isOpenUpload} onClose={() => setIsOpenUpload(false)} />
+        <SideBar handleDialogOpenUpload ={handleDialogOpenUpload} ResponseID={ResponseID} setIsShared={setIsShared} isShared={isShared} ExportasExcel={ExportasExcel} ExportasJSON={ExportasJSON} onPage={onPage} Normal={Normal} Follow={Follow} handleNormalHighlight={handleNormalHighlight} handleFollowHighlight={handleFollowHighlight} isOpenSideBar={isOpenSideBar} setIsOpenSideBar={setIsOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings} />
         <header className="sticky top-0 bg-[#f7f7f8] flex w-full text-gray-600 body-font z-[2000]">
             <nav className="navbar px-4 ">
                 <div className='flex w-full justify-between '>
                     <div className='flex w-full lg:justify-start'>
-                        <button onClick={OpenSideBarSetter} className="flex text-white items-center justify-center pl-4 mr-2">
+                        <button onClick={OpenSideBarSetter} className="flex text-white items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 -960 960 960" width="36">
                                 <path d="M160-240q-17 0-28.5-11.5T120-280q0-17 11.5-28.5T160-320h640q17 0 28.5 11.5T840-280q0 17-11.5 28.5T800-240H160Zm0-200q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520h640q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440H160Zm0-200q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h640q17 0 28.5 11.5T840-680q0 17-11.5 28.5T800-640H160Z" />
                             </svg>

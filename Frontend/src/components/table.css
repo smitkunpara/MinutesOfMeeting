@@ -23,12 +23,14 @@
 
 
 main.table {
-    width: 100%;
+    /* width: 100%; */
     background-color: #fff5;
     backdrop-filter: blur(7px);
     border-radius: .8rem;
     margin-bottom: 7vh;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .table__header {
@@ -36,7 +38,7 @@ main.table {
     height: 10%;
     background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(10px);
-    padding: .8rem 1rem;
+    padding: .8rem .2rem .8rem .8rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -44,7 +46,7 @@ main.table {
 }
 
 .table__header .input-group {
-    width: 35%;
+    width: 37%;
     height: 6vh;
     background-color: #fff5;
     box-shadow: 0 .2rem .5rem #0005;
@@ -102,7 +104,8 @@ main.table {
 
 
 table {
-    width: 100%;
+    min-width: 40rem;
+    /* width: 100%; */
 }
 
 td img {
@@ -175,13 +178,14 @@ tbody tr.hide td img {
 
 @media (max-width: 1000px) {
     td:not(:first-of-type) {
-        min-width: 12.1rem;
+        min-width: 6.5rem;
+        /* width:auto; */
     }
 }
 
 thead th span.icon-arrow {
     display: inline-block;
-    width: 1.3rem;
+    width: 0.8rem;
     height: 1.3rem;
     border-radius: 50%;
     border: 1.4px solid transparent;
