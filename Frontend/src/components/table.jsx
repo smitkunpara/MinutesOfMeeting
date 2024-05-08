@@ -1,4 +1,3 @@
-// import "bootstrap/dist/css/bootstrap.min.css";
 import { Skeleton } from '@mui/material';
 import { useEffect, useState, useMemo, useRef } from "react";
 import { toast } from "react-toastify";
@@ -18,8 +17,9 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
   const [Transcript, setTranscript] = useState([]);
   const previousWordRef = useRef(null);
   let is_shared = false;
-  useEffect( () =>  {
 
+  
+  useEffect( () =>  {
       toast.promise(
         new Promise((resolve, reject) => {
           (async () => {

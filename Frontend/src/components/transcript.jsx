@@ -20,7 +20,7 @@ function Transcript() {
 
   return (
     <>
-      <Navbar onPage='Transcript' setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh} />
+      <Navbar ResponseID={ResponseID} onPage='Transcript' setNormalHighlight={setNormalHighlight} setFollowHighligh={setFollowHighligh} />
       <div className='px-4 bg-[#f6f3f3]'>
         <div className='p-4 bg-white rounded-2xl'>
           <AudioPlayer onTimeUpdate={handleTimeUpdate} AudioTime={AudioTime} ResponseID={ResponseID} />

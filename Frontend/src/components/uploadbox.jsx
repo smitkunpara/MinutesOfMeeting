@@ -134,7 +134,7 @@ const Dialog = ({ onClose, ...rest }) => {
                                     <img src={AudioFile} className='audiofileicon' alt="" />
                                     <FileName>{file.name}</FileName>
                                 </SelectedFile>
-                                <select
+                                {/* <select
                                     value={selectedOption}
                                     onChange={handleOptionChange}
                                     className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -144,7 +144,7 @@ const Dialog = ({ onClose, ...rest }) => {
                                             {language.label}
                                         </option>
                                     ))}
-                                </select>
+                                </select> */}
                                 <div className='flex justify-center'>
                                 <DialogButton className='GreenButton ' type="submit">Upload</DialogButton>
                                 </div>

@@ -63,8 +63,12 @@ async def is_shared(meeting_id:str):
     is_shared = database.is_meeting_shared(meeting_id)
     if is_shared == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found")
-    return {"transcript" : json.loads(database.get_transcript(meeting_id)["transcript"]),"summary":json.loads(database.get_summary(meeting_id)["summary"]),"is_shared":is_shared}
-
+    transcript=database.get_transcript(meeting_id)
+    summary=database.get_summary(meeting_id)
+    if transcript == None or summary == None:
+        return {"transcript" : None,"summary":None,"is_shared":False}
+    return {"transcript" : json.loads(transcript["transcript"]),"summary":json.loads(summary["summary"]),"is_shared":is_shared}
+    
 @app.get("/transcript/{meeting_id}")
 def getTranscript(meeting_id: str,email: str = Depends(get_current_user_email)):
     if database.verify_meeting_id(meeting_id,email) == None:
@@ -106,9 +110,9 @@ async def create_upload_file(file: UploadFile = UploadFile(...) ,email: str = De
     database.add_meeting_id(meeting_id=meeting_id,email=email)
     return {"video_id": meeting_id}
 
-
-@app.post("/share")
+@app.get("/share/{meeting_id}")
 async def share_meeting(meeting_id:str,share:bool,email: str = Depends(get_current_user_email)):
+    print(meeting_id,share,email)
     if database.verify_meeting_id(meeting_id,email) == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found") 
     database.update_meeting_share_status(meeting_id,share)

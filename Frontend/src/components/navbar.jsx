@@ -39,7 +39,7 @@ const ExportasExcel = () => {
         const worksheet = workbook.addWorksheet('Meeting Data');
         worksheet.addRow(['Meeting ID', 'Date', 'StartTime(s)', 'EndTime(s)']);
         jsonData.forEach((meeting) => {
-            worksheet.addRow([meeting.speaker, meeting.text, meeting.start/1000, meeting.end/1000]);
+            worksheet.addRow([meeting.speaker, meeting.text, meeting.start / 1000, meeting.end / 1000]);
         });
         workbook.xlsx.writeBuffer().then((buffer) => {
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -52,20 +52,41 @@ const ExportasExcel = () => {
             document.body.removeChild(link);
             SuccessNotification("File Downloaded Successfully!! ")
         });
-    }else {
+    } else {
         ErrorNotification("Download Failed");
     }
 }
 
-const Navbar1 = ({ onPage, setNormalHighlight, setFollowHighligh }) => {
-    const [meetings, setMeetings] = useState([]);
-    let isShared = true;
+const fetchMeetings = (token, setMeetings, setIsLoggedIn) => {
+    axios.get('http://127.0.0.1:8000/get_meetings', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then((res) => {
+        console.log(res.data);
+        setMeetings(res.data);
+        setIsLoggedIn(true);
+        localStorage.setItem('isLoggedIn', true);
+        console.log(token);
+    }).catch((err) => {
+        WarningNotification("You have been logged out !!")
+        console.log(token);
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
+        localStorage.removeItem('isLoggedIn');
+        setIsLoggedIn(false);
+    });    
+};
+
+const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) => {
+    const [isShared, setIsShared] = useState(false);
     let token = localStorage.getItem('token');
     let email = localStorage.getItem('email');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isOpenSideBar, setIsOpenSideBar] = useState(false);
     const [Normal, setNormal] = useState(false);
     const [Follow, setFollow] = useState(false);
+    const [meetings, setMeetings] = useState([])
 
     const handleNormalHighlight = () => {
         setNormalHighlight(prevState => !prevState);
@@ -81,29 +102,20 @@ const Navbar1 = ({ onPage, setNormalHighlight, setFollowHighligh }) => {
         setNormalHighlight(false);
         console.log(Follow);
     };
+    const is_shared = async ()  => {
+        const response1 = await axios.get(`http://127.0.0.1:8000/isshared/${ResponseID}`);
+        if (response1.data["is_shared"] === true) {
+            setIsShared(true);
+        }
+    }
+
     useEffect(() => {
+        is_shared();
         if (token) {
-            axios.get('http://127.0.0.1:8000/get_meetings', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then((res) => {
-                console.log(res.data);
-                setMeetings(res.data);
-                setIsLoggedIn(true);
-                localStorage.setItem('isLoggedIn', true);
-                console.log(token);
-            }).catch((err) => {
-                WarningNotification("You have been logged out !!")
-                console.log(token);
-                localStorage.removeItem('token');
-                localStorage.removeItem('email');
-                localStorage.removeItem('isLoggedIn');
-                setIsLoggedIn(false);
-            });
+            fetchMeetings(token,setMeetings, setIsLoggedIn);
         }
         else{
-            isShared = true;
+            setIsLoggedIn(false);
         }
     }, [isLoggedIn]);
 
@@ -149,7 +161,7 @@ const Navbar1 = ({ onPage, setNormalHighlight, setFollowHighligh }) => {
     };
 
     return (<>
-        <SideBar isShared={isShared} ExportasExcel={ExportasExcel} ExportasJSON={ExportasJSON} onPage={onPage} Normal={Normal} Follow={Follow} handleNormalHighlight={handleNormalHighlight} handleFollowHighlight={handleFollowHighlight} isOpenSideBar={isOpenSideBar} setIsOpenSideBar={setIsOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings} />
+        <SideBar ResponseID={ResponseID} setIsShared={setIsShared} isShared={isShared} ExportasExcel={ExportasExcel} ExportasJSON={ExportasJSON} onPage={onPage} Normal={Normal} Follow={Follow} handleNormalHighlight={handleNormalHighlight} handleFollowHighlight={handleFollowHighlight} isOpenSideBar={isOpenSideBar} setIsOpenSideBar={setIsOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings} />
         <header className="sticky top-0 bg-[#f7f7f8] flex w-full text-gray-600 body-font z-[2000]">
             <nav className="navbar px-4 ">
                 <div className='flex w-full justify-between '>
@@ -233,4 +245,4 @@ const Navbar1 = ({ onPage, setNormalHighlight, setFollowHighligh }) => {
     );
 }
 
-export default Navbar1;
+export default Navbar;

@@ -89,6 +89,7 @@ def verify_access_token(token):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 def get_current_user_email(token: str = Depends(oauth2_scheme)):
+    print(token)
     token_data = verify_access_token(token)
     return token_data['sub']
 

@@ -5,11 +5,40 @@ from config import settings
 from fastapi import HTTPException,status
 import google.generativeai as genai
 
-# database = Database()
+
+generation_config = {
+    "temperature": 0,
+    "top_p": 1,
+    "top_k": 1,
+    "max_output_tokens": 2048,
+    }
+
+safety_settings = [
+{
+    "category": "HARM_CATEGORY_HARASSMENT",
+    "threshold": "BLOCK_ONLY_HIGH"
+},
+{
+    "category": "HARM_CATEGORY_HATE_SPEECH",
+    "threshold": "BLOCK_ONLY_HIGH"
+},
+{
+    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+},
+{
+    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+    "threshold": "BLOCK_ONLY_HIGH"
+},
+]
 
 def transcribe(video_id):
     result = database.get_transcript(video_id)
     if result:
+        check = database.get_meeting_name(video_id)
+        if check == "" or check == None :
+            title = generate_meeting_name(json.loads(result['transcript']))
+            database.set_meeting_name(video_id,title)
         return json.loads(result['transcript'])
     aai.settings.api_key = settings.ASSEMBLYAI_API_KEY
     config = aai.TranscriptionConfig(
@@ -32,6 +61,10 @@ def transcribe(video_id):
                 words.append({"start": word.start, "end": word.end, "confidence": word.confidence, "text": word.text, "speaker": word.speaker})
             dump_transcript.append({"speaker": utterance.speaker, "text": utterance.text, "start": utterance.start, "end": utterance.end, "confidence": utterance.confidence, "words": words})
         dumpVal = json.dumps(dump_transcript)
+        check = database.get_meeting_name(video_id)
+        if check == "" or check == None :
+            title = generate_meeting_name(dump_transcript)
+            database.set_meeting_name(video_id,title)
         database.insert_transcript(video_id, dumpVal)
         return dump_transcript
 
@@ -42,34 +75,6 @@ def summarize(video_id):
     
     GOOGLE_API_KEY=settings.GOOGLE_API_KEY
     genai.configure(api_key=GOOGLE_API_KEY)
-    model = genai.GenerativeModel('gemini-1.0-pro-latest')
-
-    generation_config = {
-    "temperature": 0,
-    "top_p": 1,
-    "top_k": 1,
-    "max_output_tokens": 2048,
-    }
-
-    safety_settings = [
-    {
-        "category": "HARM_CATEGORY_HARASSMENT",
-        "threshold": "BLOCK_ONLY_HIGH"
-    },
-    {
-        "category": "HARM_CATEGORY_HATE_SPEECH",
-        "threshold": "BLOCK_ONLY_HIGH"
-    },
-    {
-        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-    },
-    {
-        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-        "threshold": "BLOCK_ONLY_HIGH"
-    },
-    ]
-
     model = genai.GenerativeModel(model_name="gemini-1.0-pro",
                                 generation_config=generation_config,
                                 safety_settings=safety_settings)
@@ -86,3 +91,19 @@ def summarize(video_id):
     database.insert_summary(video_id, dump_summary)
 
     return response.text
+
+
+def generate_meeting_name(dumpVal):
+    GOOGLE_API_KEY=settings.GOOGLE_API_KEY
+    genai.configure(api_key=GOOGLE_API_KEY)
+    model = genai.GenerativeModel(model_name="gemini-1.0-pro",
+                                generation_config=generation_config,
+                                safety_settings=safety_settings) 
+    text = "What can be the title of the meeting\n\n"
+    print(dumpVal[0])
+    for utterance in dumpVal:
+        text += utterance["text"] + "\n\n"
+    response = model.generate_content(text)
+    print(response.text)
+    return response.text
+
