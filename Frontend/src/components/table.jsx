@@ -27,7 +27,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
               setLoadingTranscript(true);
               setSummaryLoading(true);
               console.log("fetching transcript");
-              const response1 = await axios.get(`http://10.1.162.128:1234/isshared/${ResponseID}`);
+              const response1 = await axios.get(`http://10.1.189.210:1234/isshared/${ResponseID}`);
               if (response1.data["is_shared"] === true) {
                 is_shared = true;
                 setTranscript(response1.data["transcript"]);
@@ -43,7 +43,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
                 navigate('/');
                 return;
               }
-                const response = await axios.get(`http://10.1.162.128:1234/transcript/${ResponseID}`,
+                const response = await axios.get(`http://10.1.189.210:1234/transcript/${ResponseID}`,
                 {
                   headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -92,7 +92,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
           new Promise((resolve, reject) => {
             (async () => {
               try {
-                const response = await axios.get(`http://10.1.162.128:1234/summary/${ResponseID}`,
+                const response = await axios.get(`http://10.1.189.210:1234/summary/${ResponseID}`,
                   {
                     headers: {
                       'Authorization': 'Bearer ' + localStorage.getItem('token'),

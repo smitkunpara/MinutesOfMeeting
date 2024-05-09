@@ -35,9 +35,7 @@ async def login(user : User):
 
 @app.post("/signup")
 async def signup(user : User):
-    print(user)
     return create_user(user)
-    # return create_user(user)
 
 @app.post("/verify")
 async def verify(otpVerify: OTPVerify):

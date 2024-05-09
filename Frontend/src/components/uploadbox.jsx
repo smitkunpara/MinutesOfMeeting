@@ -83,7 +83,7 @@ const Dialog = ({ onClose, ...rest }) => {
                         //     return Math.random().toString(36).substr(2, 10);
                         // };
                         
-                        const response = await axios.post('http://10.1.162.128:1234/uploadfile', formData, {
+                        const response = await axios.post('http://10.1.189.210:1234/uploadfile', formData, {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                                 'Content-Type': 'multipart/form-data',
@@ -119,7 +119,7 @@ const Dialog = ({ onClose, ...rest }) => {
                     <DialogClose onClick={HandleCloseButtonClose} />
                 </DialogHeader>
                 <DialogBody>
-                    <form id="UploadForm" onSubmit={handleFormSubmit} className="file-input">
+                    <form onSubmit={handleFormSubmit} className="file-input">
                         <DropArea onDrop={handleFileDrop} onDragOver={(e) => e.preventDefault()} onClick={openFileDialog}>
                             <input type="file" accept="audio/*,video/*" ref={fileInputRef} onChange={handleFileChange} hidden />
                             {!file ? (

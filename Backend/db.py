@@ -41,6 +41,8 @@ class DataBase:
         return self.db.meetings.find_one({"meeting_id": meeting_id})["is_shared"]
     
     def add_user(self, username, password,is_verified=False):
+        if self.get_user(username)!=None:
+            self.db.users.update_one({"email": username}, {"$set": {"password_hash": password}, "$set": {"is_verified": is_verified}})
         self.db.users.insert_one({"email": username, "password_hash": password, "is_verified": is_verified})
         
     def add_blacklisted_token(self, token):

@@ -52,14 +52,12 @@ def verify_user(user:User):
 
 def create_user(user:User):
     datauser=database.get_user(user.email)
-    print(datauser)
-    if datauser is not None:
+    if datauser and datauser['is_verified'] == True:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exists")
     hashed_password = get_password_hash(user.password)
     otp = random.randint(1000,9999)
     user_otp[user.email] = str(otp)
-    database.add_user(user.email, hashed_password, False)
-    return send_otp_on_email(user.email, otp)
+    return send_otp_on_email(user.email,hashed_password, otp)
 
 def verify_otp(email: str, otp: str):
     
@@ -97,7 +95,7 @@ def remove_access_token(token: str = Depends(oauth2_scheme)):
     database.add_blacklisted_token(token)
     return {"message": "User logged out successfully"}
 
-def send_otp_on_email(email: str, otp: int):
+def send_otp_on_email(email: str,hashed_password: str, otp: int):
     msg = EmailMessage()
     msg['Subject'] = "OTP verification"
     msg['To'] = email
@@ -112,6 +110,7 @@ def send_otp_on_email(email: str, otp: int):
         server.login(settings.EMAIL, settings.EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
+        database.add_user(email, hashed_password, False)
         return {"message": "OTP sent successfully"}
     except:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error while sending OTP")

@@ -58,7 +58,7 @@ const ExportasExcel = () => {
 }
 
 const fetchMeetings = (token, setMeetings, setIsLoggedIn) => {
-    axios.get('http://10.1.162.128:1234/get_meetings', {
+    axios.get('http://10.1.189.210:1234/get_meetings', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -103,7 +103,7 @@ const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) 
         console.log(Follow);
     };
     const is_shared = async ()  => {
-        const response1 = await axios.get(`http://10.1.162.128:1234/isshared/${ResponseID}`);
+        const response1 = await axios.get(`http://10.1.189.210:1234/isshared/${ResponseID}`);
         if (response1.data["is_shared"] === true) {
             setIsShared(true);
         }
@@ -127,7 +127,7 @@ const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) 
         localStorage.removeItem('JSON_DATA');
         setIsLoggedIn(false);
         try {
-            const response = await axios.get('http://10.1.162.128:1234/logout', {
+            const response = await axios.get('http://10.1.189.210:1234/logout', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

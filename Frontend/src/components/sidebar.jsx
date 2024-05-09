@@ -58,7 +58,7 @@ const SideBar = ({ handleDialogOpenUpload, ResponseID, setIsShared, isShared, on
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
-    let text = "http://10.1.162.128:1234/transcript/" + ResponseID + "/";
+    let text = "http://10.1.189.210:1234/transcript/" + ResponseID + "/";
     const copyToClipboard = async () => {
         try {
             await navigator.clipboard.writeText(text);
@@ -72,7 +72,7 @@ const SideBar = ({ handleDialogOpenUpload, ResponseID, setIsShared, isShared, on
         toast.promise(
             new Promise(async (resolve, reject) => {
                 try {
-                    const response = await axios.get(`http://10.1.162.128:1234/share/${ResponseID}?share=${!isShared}`, {
+                    const response = await axios.get(`http://10.1.189.210:1234/share/${ResponseID}?share=${!isShared}`, {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('token'),
                         }

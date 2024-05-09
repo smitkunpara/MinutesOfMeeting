@@ -79,7 +79,7 @@ const StyledAudioControl = styled('audio')(() => ({
 const AudioPlayer = ({ onTimeUpdate, AudioTime, ResponseID }) => {
 
   const location = useLocation();
-  const src = `http://10.1.162.128:1234/audio/${ResponseID}`
+  const src = `http://10.1.189.210:1234/audio/${ResponseID}`
   const audioRef = useRef(null);
   const handleTimeUpdate = (event) => {
     onTimeUpdate(event.target.currentTime);

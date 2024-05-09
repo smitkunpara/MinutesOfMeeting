@@ -3,9 +3,11 @@ import './login.css';
 import OTPInput, { ResendOTP } from "otp-input-react";
 import axios from 'axios';
 import { SuccessNotification, ErrorNotification } from './notification';
-
+import { toast } from 'react-toastify';
+import { render } from 'react-dom';
 
 const Login = ({ isOpen, onClose, LoggedIn }) => {
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const [OTP, setOTP] = useState("");
     const [onSignin, setOnSignin] = useState(true);
     const [signinEmail, setsigninEmail] = useState("");
@@ -18,7 +20,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
         console.log(signinEmail, signinPassword);
 
         try {
-            const response = await axios.post('http://10.1.162.128:1234/signin',
+            const response = await axios.post('http://10.1.189.210:1234/signin',
                 {
                     email: signinEmail,
                     password: signinPassword
@@ -39,23 +41,67 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
     }
     const signingUP = async () => {
         console.log(signupEmail, signupPassword);
-        try {
-            const response = await axios.post('http://10.1.162.128:1234/signup',
-                {
-                    email: signupEmail,
-                    password: signupPassword
-                },
-            );
-            SuccessNotification(response.data['message']);
-            sendOTP();
-            console.log(response.data);
-            localStorage.setItem('token', response.data);
-        } catch (error) {
-            console.log(error.details);
-            ErrorNotification(error.response.data['detail']);
+        if (!signupEmail || !signupPassword) {
+            ErrorNotification('Please fill all the fields');
+            return;
         }
-        // onClose();
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!emailRegex.test(signupEmail)) {
+            ErrorNotification('Invalid Email');
+            return;
+        }
+        if (signupPassword.length < 5) {
+            ErrorNotification('Password must be atleast 8 characters long');
+            return;
+        }
+        
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+        if (!passwordRegex.test(signupPassword)) {
+            ErrorNotification(`Atleast 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character`);
+            return;
+        }
+        if (signupPassword)
+            setIsButtonDisabled(true);
+        try {
+            await toast.promise(
+                new Promise(async (resolve, reject) => {
+                    try {
+                        const response = await axios.post('http://10.1.189.210:1234/signup', {
+                            email: signupEmail,
+                            password: signupPassword
+                        });
+                        localStorage.setItem('email', signupEmail);
+                        localStorage.setItem('token', response.data['token']);
+                        console.log(response.data);
+                        resolve(response.data.message);
+                        sendOTP();
+                    } catch (error) {
+                        reject(error.response.data.detail);
+                    }
+                }),
+                {
+                    pending: 'Sending OTP...',
+                    success: (msg) => {
+                        SuccessNotification(msg);
+                        return 'OTP Sent!';
+                    },
+                    error: (msg) => {
+                        ErrorNotification(msg);
+                        return 'Failed to send OTP';
+                    }
+                },
+                {
+                    position: "top-center",
+                    autoClose: 2000,
+                }
+            );
+        } catch (error) {
+            ErrorNotification(error)
+            console.log(error);
+        }
+        setIsButtonDisabled(false);
     }
+
 
     const swictToSignUp = () => {
         const container = document.getElementById("container");
@@ -80,7 +126,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
     }
     const verifyOTP = async () => {
         try {
-            const response = await axios.post('http://10.1.162.128:1234/verify',
+            const response = await axios.post('http://10.1.189.210:1234/verify',
                 {
                     email: signupEmail,
                     otp: OTP
@@ -116,7 +162,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                         <input className='input' id="email" type="email" placeholder="Email" value={signupEmail} onChange={(e) => setsignupEmail(e.target.value)} />
                                         <input className='input' id="password" type="password" placeholder="Password" value={signupPassword} onChange={(e) => setsignupPassword(e.target.value)} />
                                         <p className='text-base text-gray-700 my-2'>OTP will be sent ton your Email id.</p>
-                                        <button onClick={signingUP} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
+                                        <button disabled={isButtonDisabled} id='otpbtn1' onClick={signingUP} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
                                     </div>
                                     <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#fc445c]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
                                     <div className='otp-container hidden'>
@@ -147,7 +193,8 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                         <h1 className='font-bold'>Create Account</h1>
                                         <input className='input' id="email" type="email" placeholder="Email" value={signupEmail} onChange={(e) => setsignupEmail(e.target.value)} />
                                         <input className='input' id="password" type="password" placeholder="Password" value={signupPassword} onChange={(e) => setsignupPassword(e.target.value)} />
-                                        <button onClick={signingUP} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
+                                        <p className='text-base text-gray-700 my-2'>OTP will be sent ton your Email id.</p>
+                                        <button onClick={signingUP} disabled={isButtonDisabled} id='otpbtn2' className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
                                     </div>
                                     <div className='otp-container hidden'>
                                         <h1 className='font-bold'>Enter OTP received on your Email :</h1>
