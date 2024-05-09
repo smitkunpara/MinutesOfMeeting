@@ -83,7 +83,7 @@ const Dialog = ({ onClose, ...rest }) => {
                         //     return Math.random().toString(36).substr(2, 10);
                         // };
                         
-                        const response = await axios.post('http://10.1.189.210:1234/uploadfile', formData, {
+                        const response = await axios.post('http://127.0.0.1:8000/uploadfile', formData, {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                                 'Content-Type': 'multipart/form-data',

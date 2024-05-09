@@ -22,7 +22,7 @@ class DataBase:
         self.db.users.update_one({"email": username}, {"$set": {"is_verified": is_verified}})
         
     def verify_meeting_id(self,meeting_id,email):
-        return self.db.meetings.find_one({"meeting_id": meeting_id, "email": email}) is not None
+        return self.db.meetings.find_one({"meeting_id": meeting_id, "email": email}) is None
     
     def add_meeting_id(self,meeting_id,email):
         self.db.meetings.insert_one({"meeting_id": meeting_id, "email": email,"is_shared": False,"meeting_name": ""})
@@ -35,10 +35,13 @@ class DataBase:
     def update_meeting_share_status(self,meeting_id,status):
         self.db.meetings.update_one({"meeting_id": meeting_id}, {"$set": {"is_shared": status}})
         
-    def is_meeting_shared(self,meeting_id):
+    def is_meeting_shared(self,meeting_id,email):
         if self.db.meetings.find_one({"meeting_id": meeting_id}) is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found")
-        return self.db.meetings.find_one({"meeting_id": meeting_id})["is_shared"]
+        if email!="null" and self.db.meetings.find_one({"meeting_id": meeting_id, "email": email}) is not None:
+            return {"own":True,"is_shared":self.db.meetings.find_one({"meeting_id": meeting_id})["is_shared"]}
+        return {"own":False,"is_shared":self.db.meetings.find_one({"meeting_id": meeting_id})["is_shared"]}
+
     
     def add_user(self, username, password,is_verified=False):
         if self.get_user(username)!=None:

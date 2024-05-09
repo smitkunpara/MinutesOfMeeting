@@ -51,33 +51,52 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme, expanded }) => ({
 
 
 
-const SideBar = ({ handleDialogOpenUpload, ResponseID, setIsShared, isShared, onPage, ExportasExcel, ExportasJSON, setIsOpenSideBar, isOpenSideBar, isLoggedIn, meetings, handleNormalHighlight, Normal, Follow, handleFollowHighlight }) => {
+const SideBar = ({ handleDialogOpenUpload, ResponseID, onPage, ExportasExcel, ExportasJSON, setIsOpenSideBar, isOpenSideBar, isLoggedIn, meetings, handleNormalHighlight, Normal, Follow, handleFollowHighlight }) => {
+    const [isShared, setIsShared] = useState(false);
+    const [itsown, setItsown] = useState(false);
     const navigate = useNavigate();
     const [expanded, setExpanded] = React.useState('panel3');
+    const is_shared = async ()  => {
+        const response1 = await axios.get(`http://127.0.0.1:8000/isshared/${ResponseID}?email=${localStorage.getItem('email')}`);
+        setItsown(response1.data["own"]);
+        if (response1.data["own"] == true && response1.data["is_shared"]==false) {
+            setIsShared(false);
+        }
+        else{
+            setIsShared(true)
+        }
 
+    }
+    is_shared();
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
-    let text = "http://10.1.189.210:1234/transcript/" + ResponseID + "/";
+    let text = "http://10.1.189.210:5173/transcript/" + ResponseID + "/";
     const copyToClipboard = async () => {
         try {
-            await navigator.clipboard.writeText(text);
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
             SuccessNotification('Link copied to clipboard');
         } catch (err) {
             console.error('Failed to copy: ', err);
             ErrorNotification('Failed to copy link');
         }
     };
+    
     const changeIsShared = () => {
         toast.promise(
             new Promise(async (resolve, reject) => {
                 try {
-                    const response = await axios.get(`http://10.1.189.210:1234/share/${ResponseID}?share=${!isShared}`, {
+                    const response = await axios.get(`http://127.0.0.1:8000/share/${ResponseID}?share=${!isShared}`, {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('token'),
                         }
                     });
-                    setIsShared(!isShared);
+                    setIsShared(response.data["is_shared"]);
                     if (isShared) {
                         resolve('Meeting Unshared');
                     }
@@ -147,7 +166,7 @@ const SideBar = ({ handleDialogOpenUpload, ResponseID, setIsShared, isShared, on
                                 </div>
                                 <div>
                                     {onPage == "Transcript" ? (<>
-                                        <Accordion expanded={expanded === 'panel0'} onChange={handleChange('panel0')}>
+                                        {itsown&&<Accordion expanded={expanded === 'panel0'} onChange={handleChange('panel0')}>
                                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expanded={expanded === 'panel0'}>
                                                 <Typography className="w-[90%]">
                                                     <h1 className="w-full text-[1.2rem] text-center">Share Meeting</h1>
@@ -180,7 +199,7 @@ const SideBar = ({ handleDialogOpenUpload, ResponseID, setIsShared, isShared, on
                                                     }
                                                 </Typography>
                                             </AccordionDetails>
-                                        </Accordion>
+                                        </Accordion>}
 
                                         <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expanded={expanded === 'panel1'}>

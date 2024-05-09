@@ -17,6 +17,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
   const [Transcript, setTranscript] = useState([]);
   const previousWordRef = useRef(null);
   let is_shared = false;
+  let its_own = false;
 
   
   useEffect( () =>  {
@@ -27,9 +28,11 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
               setLoadingTranscript(true);
               setSummaryLoading(true);
               console.log("fetching transcript");
-              const response1 = await axios.get(`http://10.1.189.210:1234/isshared/${ResponseID}`);
+              const response1 = await axios.get(`http://127.0.0.1:8000/isshared/${ResponseID}?email=${localStorage.getItem('email')}`);
+              console.log(response1.data);
               if (response1.data["is_shared"] === true) {
-                is_shared = true;
+                is_shared = response1.data["is_shared"];
+                its_own = response1.data["own"];
                 setTranscript(response1.data["transcript"]);
                 setSummaryData(response1.data["summary"]);
                 resolve()
@@ -43,7 +46,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
                 navigate('/');
                 return;
               }
-                const response = await axios.get(`http://10.1.189.210:1234/transcript/${ResponseID}`,
+                const response = await axios.get(`http://127.0.0.1:8000/transcript/${ResponseID}`,
                 {
                   headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -64,7 +67,8 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
               reject(error.response.data["detail"]);
               localStorage.removeItem('token');
               localStorage.removeItem('JSON_DATA');
-              localStorage.removeItem('email');}
+              localStorage.removeItem('email');
+            }
               navigate('/');
               console.log(error);
             }
@@ -92,7 +96,7 @@ const Table = ({ ResponseID, currentTime, NormalHighlight, FollowHighligh: Follo
           new Promise((resolve, reject) => {
             (async () => {
               try {
-                const response = await axios.get(`http://10.1.189.210:1234/summary/${ResponseID}`,
+                const response = await axios.get(`http://127.0.0.1:8000/summary/${ResponseID}`,
                   {
                     headers: {
                       'Authorization': 'Bearer ' + localStorage.getItem('token'),

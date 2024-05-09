@@ -58,7 +58,7 @@ const ExportasExcel = () => {
 }
 
 const fetchMeetings = (token, setMeetings, setIsLoggedIn) => {
-    axios.get('http://10.1.189.210:1234/get_meetings', {
+    axios.get('http://127.0.0.1:8000/get_meetings', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -79,7 +79,6 @@ const fetchMeetings = (token, setMeetings, setIsLoggedIn) => {
 };
 
 const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) => {
-    const [isShared, setIsShared] = useState(false);
     let token = localStorage.getItem('token');
     let email = localStorage.getItem('email');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -102,15 +101,9 @@ const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) 
         setNormalHighlight(false);
         console.log(Follow);
     };
-    const is_shared = async ()  => {
-        const response1 = await axios.get(`http://10.1.189.210:1234/isshared/${ResponseID}`);
-        if (response1.data["is_shared"] === true) {
-            setIsShared(true);
-        }
-    }
+    
 
     useEffect(() => {
-        is_shared();
         if (token) {
             fetchMeetings(token,setMeetings, setIsLoggedIn);
         }
@@ -127,7 +120,7 @@ const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) 
         localStorage.removeItem('JSON_DATA');
         setIsLoggedIn(false);
         try {
-            const response = await axios.get('http://10.1.189.210:1234/logout', {
+            const response = await axios.get('http://127.0.0.1:8000/logout', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -171,7 +164,7 @@ const Navbar = ({ ResponseID,  onPage, setNormalHighlight, setFollowHighligh }) 
 
     return (<>
     <UploadBox  isOpen={isOpenUpload} onClose={() => setIsOpenUpload(false)} />
-        <SideBar handleDialogOpenUpload ={handleDialogOpenUpload} ResponseID={ResponseID} setIsShared={setIsShared} isShared={isShared} ExportasExcel={ExportasExcel} ExportasJSON={ExportasJSON} onPage={onPage} Normal={Normal} Follow={Follow} handleNormalHighlight={handleNormalHighlight} handleFollowHighlight={handleFollowHighlight} isOpenSideBar={isOpenSideBar} setIsOpenSideBar={setIsOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings} />
+        <SideBar handleDialogOpenUpload ={handleDialogOpenUpload} ResponseID={ResponseID} ExportasExcel={ExportasExcel} ExportasJSON={ExportasJSON} onPage={onPage} Normal={Normal} Follow={Follow} handleNormalHighlight={handleNormalHighlight} handleFollowHighlight={handleFollowHighlight} isOpenSideBar={isOpenSideBar} setIsOpenSideBar={setIsOpenSideBar} isLoggedIn={isLoggedIn} meetings={meetings} />
         <header className="sticky top-0 bg-[#f7f7f8] flex w-full text-gray-600 body-font z-[2000]">
             <nav className="navbar px-4 ">
                 <div className='flex w-full justify-between '>
