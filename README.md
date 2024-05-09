@@ -17,22 +17,33 @@ The Minutes of Meeting (MoM) System is a web-based application designed to strea
 ```bash 
 git clone https://github.com/smitkunpara/MinutesOfMeeting
 ```
-
-2. Install python requirements and start Backend server
+2. Navigate to the fro directory: 
+```bash 
+cd MinutesOfMeeting/Backend 
+```
+3. Install python requirements
 ```bash
-cd MinutesOfMeeting/Backend
 pip install -r requirements.txt
+```
+4. Start the Backend server: 
+```bash 
 uvicorn main:app --reload
 ```
-3. In separate terminal start Frontend 
+2. Navigate to the fro directory: 
 ```bash 
-cd MinutesOfMeeting/Frontend
+cd ../Frontend 
+```
+3. Install dependencies: 
+```bash 
 npm install
+```
+4. Start the Frontend server: 
+```bash 
 npm run dev
 ```
-4. Access the application in your web browser at 
+5. Access the application in your web browser at 
 ```bash
-http://localhost:8000
+http://localhost:5173
 ```
 
 ## Usage
