@@ -122,7 +122,7 @@
   margin: 0 0.5rem;
   font-size: 2rem;
   text-align: center;
-  border: 2px solid #eb6072;
+  border: 2px solid #3B81F6;
   background-color: #f9f9f9;
   border-radius: 5px;
   
@@ -215,7 +215,7 @@
 }
 
 .overlay {
-	background: linear-gradient(to right, #FF4B2B, #FF416C);
+	background: linear-gradient(to right, #792bff, #3B81F6);
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 0 0;
@@ -230,7 +230,7 @@
 
 .container1.right-panel-active .overlay {
   	transform: translateX(50%);
-    background: linear-gradient(to left, #FF4B2B, #FF416C);
+    background: linear-gradient(to left, #3B81F6, #2b87ff);
 
 }
 

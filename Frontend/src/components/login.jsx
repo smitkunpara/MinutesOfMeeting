@@ -162,14 +162,14 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                         <input className='input' id="email" type="email" placeholder="Email" value={signupEmail} onChange={(e) => setsignupEmail(e.target.value)} />
                                         <input className='input' id="password" type="password" placeholder="Password" value={signupPassword} onChange={(e) => setsignupPassword(e.target.value)} />
                                         <p className='text-base text-gray-700 my-2'>OTP will be sent ton your Email id.</p>
-                                        <button disabled={isButtonDisabled} id='otpbtn1' onClick={signingUP} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
+                                        <button disabled={isButtonDisabled} id='otpbtn1' onClick={signingUP} className="rounded-full border border-solid border-blue-600 bg-[#3B81F6] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
                                     </div>
-                                    <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#fc445c]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
+                                    <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#3B81F6]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
                                     <div className='otp-container hidden'>
                                         <h1 className='font-bold'>Enter OTP received on your Email :</h1>
                                         <OTPInput className='otp-input' value={OTP} onChange={setOTP} OTPLength={4} otpType="number" disabled={false} secure />
                                         <ResendOTP onResendClick={() => console.log("Resend clicked")} />
-                                        <button className="rounded-full my-4 border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Verify</button>
+                                        <button className="rounded-full my-4 border border-solid border-blue-600 bg-[#3B81F6] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Verify</button>
                                     </div>
                                 </div>
                             </div>}
@@ -179,8 +179,8 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                     <h1 className='font-bold'>Sign in</h1>
                                     <input className='input' type="email" placeholder="Email" value={signinEmail} onChange={(e) => setsigninEmail(e.target.value)} />
                                     <input className='input' type="password" placeholder="Password" value={signinPassword} onChange={(e) => setsigninPassword(e.target.value)} />
-                                    <button onClick={signingIN} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white my-2 font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
-                                    <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#fc445c]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign up</button>
+                                    <button onClick={signingIN} className="rounded-full border border-solid border-blue-600 bg-[#3B81F6] text-white my-2 font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
+                                    <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#3B81F6]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign up</button>
                                 </div>
                             </div>}
                     </div>
@@ -194,13 +194,13 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                         <input className='input' id="email" type="email" placeholder="Email" value={signupEmail} onChange={(e) => setsignupEmail(e.target.value)} />
                                         <input className='input' id="password" type="password" placeholder="Password" value={signupPassword} onChange={(e) => setsignupPassword(e.target.value)} />
                                         <p className='text-base text-gray-700 my-2'>OTP will be sent ton your Email id.</p>
-                                        <button onClick={signingUP} disabled={isButtonDisabled} id='otpbtn2' className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
+                                        <button onClick={signingUP} disabled={isButtonDisabled} id='otpbtn2' className="rounded-full border border-solid border-blue-600 bg-[#3B81F6] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
                                     </div>
                                     <div className='otp-container hidden'>
                                         <h1 className='font-bold'>Enter OTP received on your Email :</h1>
                                         <OTPInput className='otp-input' value={OTP} onChange={setOTP} OTPLength={4} otpType="number" disabled={false} secure />
                                         <ResendOTP onResendClick={() => console.log("Resend clicked")} />
-                                        <button onClick={verifyOTP} className="rounded-full my-4 border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Verify</button>
+                                        <button onClick={verifyOTP} className="rounded-full my-4 border border-solid border-blue-600 bg-[#3B81F6] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Verify</button>
                                     </div>
                                 </div>
                                 <button onClick={onClose} className='close'></button>
@@ -212,7 +212,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                 <input className='input' id="Email" type="email" placeholder="Email" value={signinEmail} onChange={(e) => setsigninEmail(e.target.value)} />
                                 <input className='input' id="Password" type="password" placeholder="Password" value={signinPassword} onChange={(e) => setsigninPassword(e.target.value)} />
                                 <a className='text-base text-gray-700 no-underline my-6'>Forgot your password?</a>
-                                <button onClick={signingIN} className="rounded-full border border-solid border-red-600 bg-[#fc445c] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
+                                <button onClick={signingIN} className="rounded-full border border-solid border-blue-600 bg-[#3B81F6] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
                             </div>
                         </div>
                         <div className="overlay-container">
