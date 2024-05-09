@@ -43,7 +43,7 @@ npm run dev
 ```
 8. Access the application in your web browser at 
 ```bash
-http://localhost:8000
+http://localhost:5173
 ```
 
 ## Usage
