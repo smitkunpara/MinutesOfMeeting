@@ -29,9 +29,9 @@ cd MinutesOfMeeting/Backend
 ```bash 
 uvicorn main:app --reload
 ```
-5. Navigate to the fro directory: 
+5. In new terminal go to Frontend directory: 
 ```bash 
-cd ../Frontend 
+cd Frontend 
 ```
 6. Install dependencies: 
 ```bash 
