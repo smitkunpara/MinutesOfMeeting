@@ -12,25 +12,66 @@ The Minutes of Meeting (MoM) System is a web-based application designed to strea
 - Compatibility with various devices and browsers
 - Scalable architecture to accommodate growing user base and data volume
 
+## Configuration
+Before running the application, you need to set up the environment variables. Follow these steps to generate a [`.env`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2Fd%3A%2FMinutesOfMeeting%2F.env%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%5D "d:\MinutesOfMeeting\.env") file:
+
+1. Navigate to the root directory of the project:
+```bash
+cd MinutesOfMeeting
+```
+
+2. Create a `.env` file:
+```bash
+touch .env
+```
+
+3. Open the [`.env`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2Fd%3A%2FMinutesOfMeeting%2F.env%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%5D "d:\MinutesOfMeeting\.env") file with your favorite text editor and add the following lines, replacing the placeholder values with your actual API keys, secrets, and other configurations:
+```properties
+ASSEMBLYAI_API_KEY="<your_assemblyai_api_key>"
+GOOGLE_API_KEY="<your_google_api_key>"
+JWT_SECRET="<your_jwt_secret>"
+JWT_ALGORITHM="HS256"
+JWT_EXPIRES_MINUTES=100
+EMAIL="<your_email>"
+EMAIL_PASSWORD="<your_email_app_password>"
+DATABASE_URL="<your_mongodb_connection_string>"
+MONGODB_NAME="<you_mongodb_name>"
+```
+Make sure to replace `<your_assemblyai_api_key>`, `<your_google_api_key>`, `<your_jwt_secret>`, `<your_email>`, `<your_email_app_password>`, and `<your_mongodb_connection_string>` with your actual data.
+
+4. Save the `.env` file and proceed with the installation instructions.
+
+This `.env` file will be automatically used by the application to configure the necessary environment variables.
+
 ## Installation
 1. Clone the repository: 
 ```bash 
 git clone https://github.com/smitkunpara/MinutesOfMeeting
 ```
 
-2. Install python requirements and start Backend server
+2. Create a virtual environment and activate it
 ```bash
 cd MinutesOfMeeting/Backend
+python -m venv venv
+# On Windows
+venv\Scripts\activate
+# On Unix or MacOS
+source venv/bin/activate
+```
+
+3. Install python requirements and start Backend server
+```bash
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
-3. In separate terminal start Frontend 
+
+4. In separate terminal start Frontend 
 ```bash 
 cd MinutesOfMeeting/Frontend
 npm install
 npm run dev
 ```
-4. Access the application in your web browser at 
+5. Access the application in your web browser at 
 ```bash
 http://localhost:5173
 ```

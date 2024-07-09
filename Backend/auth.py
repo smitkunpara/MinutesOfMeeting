@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from db import database
 from schemas import User
 from config import settings
-# import aioredis
 from email.message import EmailMessage
 import random
 import smtplib
@@ -18,7 +17,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.JWT_EXPIRES_MINUTES
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-user_otp = {}
 def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -34,8 +32,6 @@ def verify_password(plain_password, hashed_password):
 
 def verify_user(user:User):
     userdata = database.get_user(user.email)
-    # if get_password_hash(user.password) != userdata['password_hash']:
-    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
     if not userdata:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found !!")
     if userdata['is_verified'] == False:
@@ -44,11 +40,6 @@ def verify_user(user:User):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password !!")
     return create_access_token(data={"sub": userdata['email']})
 
-# def create_user(user:User):
-#     hashed_password = get_password_hash(user.password)
-#     database.add_user(user.email, hashed_password,True)
-#     # return create_otp(User)
-#     return create_access_token(data={"sub": user.email})
 
 def create_user(user:User):
     datauser=database.get_user(user.email)
@@ -56,22 +47,20 @@ def create_user(user:User):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exists")
     hashed_password = get_password_hash(user.password)
     otp = random.randint(1000,9999)
-    user_otp[user.email] = str(otp)
+    database.store_otp(user.email,str(otp))
     return send_otp_on_email(user.email,hashed_password, otp)
 
 def verify_otp(email: str, otp: str):
-    
     user=database.get_user(email)
-    print(type(user['is_verified']),user['is_verified'])
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     if user['is_verified'] != 0:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User already verified")
-    if user_otp.get(email) is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid OTP request")
-    if user_otp[email] != otp:
+    flag=database.verify_otp(email,otp)
+    if flag==0:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect OTP")
-    user_otp.pop(email)
+    elif flag==1:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="OTP expired")
     database.update_user_verification_status(email, True)
     return {"message": "User verified successfully", "token": create_access_token(data={"sub": email}) }
 
@@ -87,7 +76,6 @@ def verify_access_token(token):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 def get_current_user_email(token: str = Depends(oauth2_scheme)):
-    print(token)
     token_data = verify_access_token(token)
     return token_data['sub']
 

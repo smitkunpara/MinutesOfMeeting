@@ -1,6 +1,7 @@
 import pymongo
 from config import settings
 from fastapi import HTTPException,status
+import datetime
 
 class DataBase:
     def __init__(self) -> None:
@@ -78,4 +79,18 @@ class DataBase:
         result = self.db.meetings.find_one({"meeting_id": meeting_id})
         return result["meeting_name"]
     
+    def store_otp(self,email,otp):
+        current_time = datetime.datetime.now()
+        self.db.otp.insert_one({"email": email, "otp": otp, "time": current_time})
+        
+    def verify_otp(self,email,otp):
+        result = self.db.otp.find_one({"email": email, "otp": otp})
+        if result is None:
+            return 0
+        current_time = datetime.datetime.now()
+        if (current_time - result["time"]).seconds > 300:
+            return 1
+        self.db.otp.delete_one({"email": email, "otp": otp})
+        return 2
+        
 database=DataBase()
