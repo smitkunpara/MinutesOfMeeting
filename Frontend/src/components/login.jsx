@@ -161,7 +161,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                         <h1 className='font-bold'>Create Account</h1>
                                         <input className='input' id="email" type="email" placeholder="Email" value={signupEmail} onChange={(e) => setsignupEmail(e.target.value)} />
                                         <input className='input' id="password" type="password" placeholder="Password" value={signupPassword} onChange={(e) => setsignupPassword(e.target.value)} />
-                                        <p className='text-base text-gray-700 my-2'>OTP will be sent ton your Email id.</p>
+                                        <p className='text-base text-gray-700 my-2'>OTP will be sent to your Email id.</p>
                                         <button disabled={isButtonDisabled} id='otpbtn1' onClick={signingUP} className="rounded-full border border-solid border-blue-600 bg-[#3B81F6] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
                                     </div>
                                     <button onClick={() => setOnSignin(!onSignin)} className="rounded-full hover:bg-[#3B81F6]  font-bold text-xs px-8 py-2 my-1 hover:text-white tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign In</button>
@@ -193,7 +193,7 @@ const Login = ({ isOpen, onClose, LoggedIn }) => {
                                         <h1 className='font-bold'>Create Account</h1>
                                         <input className='input' id="email" type="email" placeholder="Email" value={signupEmail} onChange={(e) => setsignupEmail(e.target.value)} />
                                         <input className='input' id="password" type="password" placeholder="Password" value={signupPassword} onChange={(e) => setsignupPassword(e.target.value)} />
-                                        <p className='text-base text-gray-700 my-2'>OTP will be sent ton your Email id.</p>
+                                        <p className='text-base text-gray-700 my-2'>OTP will be sent to your Email id.</p>
                                         <button onClick={signingUP} disabled={isButtonDisabled} id='otpbtn2' className="rounded-full border border-solid border-blue-600 bg-[#3B81F6] text-white font-bold text-xs uppercase px-8 py-2 tracking-wide focus:outline-none transition-transform duration-75 transform hover:scale-95 active:scale-95">Sign Up</button>
                                     </div>
                                     <div className='otp-container hidden'>
